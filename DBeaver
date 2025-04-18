@@ -1,0 +1,54 @@
+CREATE TABLE pessoa (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    cpf VARCHAR(14) UNIQUE NOT NULL,
+    nome VARCHAR(100),
+    email VARCHAR(100),
+    data_nascimento DATE,
+    rua VARCHAR(100),
+    numero VARCHAR(10),
+    bairro VARCHAR(50),
+    cidade VARCHAR(50)
+);
+	
+CREATE TABLE paciente (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    pessoa_id BIGINT NOT NULL,
+    FOREIGN KEY (pessoa_id) REFERENCES pessoa(id)
+);
+
+CREATE TABLE funcionario (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    pessoa_id BIGINT NOT NULL,
+    FOREIGN KEY (pessoa_id) REFERENCES pessoa(id)
+);
+
+CREATE TABLE dentista (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    funcionario_id BIGINT NOT NULL,
+    cro VARCHAR(20),
+    especialidade VARCHAR(50),
+    FOREIGN KEY (funcionario_id) REFERENCES funcionario(id)
+);
+
+CREATE TABLE auxiliar_administrativo (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    funcionario_id BIGINT NOT NULL,
+    FOREIGN KEY (funcionario_id) REFERENCES funcionario(id)
+);
+
+CREATE TABLE telefone (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    numero VARCHAR(20) NOT NULL,
+    pessoa_id BIGINT NOT NULL,
+    FOREIGN KEY (pessoa_id) REFERENCES pessoa(id)
+);
+
+CREATE TABLE endereco (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    rua VARCHAR(255) NOT NULL,
+    numero VARCHAR(50) NOT NULL,
+    bairro VARCHAR(100),
+    cidade VARCHAR(100),
+    pessoa_id BIGINT,
+    FOREIGN KEY (pessoa_id) REFERENCES pessoa(id)
+);
