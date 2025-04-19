@@ -4,6 +4,7 @@ public class Dentista extends Funcionario {
     private String cro;
     private String especialidade;
 
+
     public String getCro() {
         return cro;
     }
@@ -19,4 +20,5 @@ public class Dentista extends Funcionario {
     public void setEspecialidade(String especialidade) {
         this.especialidade = especialidade;
     }
+
 }

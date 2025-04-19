@@ -2,27 +2,25 @@ package com.consultorio.models;
 import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class Pessoa {
+    private Long id;
     private String cpf;
     private String nome;
     private String email;
-    private String telefone;
-    private String rua;
-    private String numero;
-    private String bairro;
-    private String cidade;
+    private List<Telefone> telefones;
+    private Endereco endereco;
     private LocalDate dataNascimento;
-    private Integer id;
 
-    public Integer getId() {
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
-
 
     public String getCpf() {
         return cpf;
@@ -48,45 +46,13 @@ public class Pessoa {
         this.email = email;
     }
 
-    public String getTelefone() {
-        return telefone;
-    }
+    public List<Telefone> getTelefones() {return telefones;}
 
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
+    public void setTelefones(List<Telefone> telefones) {this.telefones = telefones;}
 
-    public String getRua() {
-        return rua;
-    }
+    public Endereco getEndereco() {return endereco;}
 
-    public void setRua(String rua) {
-        this.rua = rua;
-    }
-
-    public String getNumero() {
-        return numero;
-    }
-
-    public void setNumero(String numero) {
-        this.numero = numero;
-    }
-
-    public String getBairro() {
-        return bairro;
-    }
-
-    public void setBairro(String bairro) {
-        this.bairro = bairro;
-    }
-
-    public String getCidade() {
-        return cidade;
-    }
-
-    public void setCidade(String cidade) {
-        this.cidade = cidade;
-    }
+    public void setEndereco(Endereco endereco) {this.endereco = endereco;}
 
     public LocalDate getDataNascimento() {
         return dataNascimento;

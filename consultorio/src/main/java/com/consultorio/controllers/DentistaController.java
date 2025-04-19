@@ -2,13 +2,14 @@ package com.consultorio.controllers;
 
 import com.consultorio.dao.DentistaDAO;
 import com.consultorio.models.Dentista;
+import com.consultorio.models.Telefone;
+import com.consultorio.models.Endereco;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import java.time.LocalDate;
+import java.util.Collections;
 
 @Controller
 public class DentistaController {
@@ -36,15 +37,24 @@ public class DentistaController {
         dentista.setCpf("99999999");
         dentista.setNome("Teste Conexao");
         dentista.setEmail("teste@teste.com");
-        dentista.setTelefone("8888888888");
-        dentista.setRua("Rua Teste");
-        dentista.setNumero("123");
-        dentista.setBairro("Centro");
-        dentista.setCidade("Cidade Teste");
         dentista.setDataNascimento(LocalDate.of(1990, 1, 1));
         dentista.setCro("CRO12345");
         dentista.setEspecialidade("Ortodontia");
 
+        // Adicionando o Telefone
+        Telefone telefone = new Telefone();
+        telefone.setNumero("8888888888");
+        dentista.setTelefones(Collections.singletonList(telefone)); // Adicionando um único telefone na lista
+
+        // Adicionando o Endereço
+        Endereco endereco = new Endereco();
+        endereco.setRua("Rua Teste");
+        endereco.setNumero("123");
+        endereco.setBairro("Centro");
+        endereco.setCidade("Cidade Teste");
+        dentista.setEndereco(endereco);
+
+        // Salvando o dentista
         dentistaDAO.salvar(dentista);
         return ResponseEntity.ok("Conexão funcionando e dentista salvo.");
     }
