@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Dentista</title>
+</head>
+<body>
+
+<h1>Editar Dentista</h1>
+
+<form action="/dentista/editar" method="POST">
+    <input type="hidden" name="cpf" th:value="${dentista.cpf}">
+    <label for="nome">Nome:</label>
+    <input type="text" id="nome" name="nome" th:value="${dentista.nome}" required><br><br>
+
+    <label for="telefone">Telefone:</label>
+    <input type="text" id="telefone" name="telefone" th:value="${dentista.telefone}" required><br><br>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" th:value="${dentista.email}" required><br><br>
+
+    <label for="rua">Rua:</label>
+    <input type="text" id="rua" name="rua" th:value="${dentista.rua}" required><br><br>
+
+    <label for="numero">Número:</label>
+    <input type="text" id="numero" name="numero" th:value="${dentista.numero}" required><br><br>
+
+    <label for="bairro">Bairro:</label>
+    <input type="text" id="bairro" name="bairro" th:value="${dentista.bairro}" required><br><br>
+
+    <label for="cidade">Cidade:</label>
+    <input type="text" id="cidade" name="cidade" th:value="${dentista.cidade}" required><br><br>
+
+    <label for="data_nascimento">Data de Nascimento:</label>
+    <input type="date" id="data_nascimento" name="dataNascimento" th:value="${dentista.dataNascimento}" required><br><br>
+
+    <label for="cro">CRO:</label>
+    <input type="text" id="cro" name="cro" th:value="${dentista.cro}" required><br><br>
+
+    <label for="especialidade">Especialidade:</label>
+    <input type="text" id="especialidade" name="especialidade" th:value="${dentista.especialidade}" required><br><br>
+
+    <button type="submit">Salvar alterações</button>
+</form>
+
+</body>
+</html>

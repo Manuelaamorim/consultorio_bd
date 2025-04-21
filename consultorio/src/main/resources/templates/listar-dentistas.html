@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listar Dentistas</title>
+</head>
+<body>
+
+<h1>Lista de Dentistas</h1>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Nome</th>
+        <th>CPF</th>
+        <th>Email</th>
+        <th>Telefone</th>
+        <th>Especialidade</th>
+        <th>Ações</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="dentista : ${dentistas}">
+        <td th:text="${dentista.nome}"></td>
+        <td th:text="${dentista.cpf}"></td>
+        <td th:text="${dentista.email}"></td>
+        <td th:text="${dentista.telefone}"></td>
+        <td th:text="${dentista.especialidade}"></td>
+        <td>
+            <button type="button" th:attr="data-cpf=${dentista.cpf}" onclick="deletarDentista(this)">Excluir</button>
+            <a href="/dentista/editar/{cpf}" th:href="@{/dentista/editar/{cpf}(cpf=${dentista.cpf})}">
+                <button>Editar</button>
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<script>
+    function deletarDentista(button) {
+        const cpf = button.getAttribute('data-cpf');
+        if (confirm("Tem certeza que deseja excluir este dentista?")) {
+            fetch(`/dentistas/${cpf}`, {
+                method: 'DELETE',
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert(data);
+                window.location.reload();
+            })
+            .catch(error => alert("Erro ao excluir o dentista."));
+        }
+    }
+</script>
+
+</body>
+</html>

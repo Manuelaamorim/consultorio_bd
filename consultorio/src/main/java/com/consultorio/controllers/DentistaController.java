@@ -3,12 +3,11 @@ package com.consultorio.controllers;
 import com.consultorio.dao.DentistaDAO;
 import com.consultorio.models.Dentista;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.time.LocalDate;
+import java.util.List;
 
 @Controller
 public class DentistaController {
@@ -22,37 +21,42 @@ public class DentistaController {
         return "dentista-form.html"; // Arquivo tem que estar em src/main/resources/static/
     }
 
-    // Recebe os dados do formulário
+    // Método para listar todos os dentistas
+    @GetMapping("/dentistas")
+    public String listarDentistas(Model model) {
+        List<Dentista> dentistas = dentistaDAO.listarDentistas(); // Método para buscar todos os dentistas
+        model.addAttribute("dentistas", dentistas);
+        return "listar-dentistas.html"; // Nova página HTML para listar os dentistas
+    }
+
+    // Recebe os dados do formulário e adiciona o dentista
     @PostMapping("/dentistas")
-    @ResponseBody // Retorna string diretamente como resposta
+    @ResponseBody
     public String adicionarDentista(@RequestBody Dentista dentista) {
         dentistaDAO.salvar(dentista);
         return "Dentista salvo com sucesso!";
     }
 
-    @GetMapping("/testar-conexao")
-    public ResponseEntity<String> testarConexao() {
-        Dentista dentista = new Dentista();
-        dentista.setCpf("99999999");
-        dentista.setNome("Teste Conexao");
-        dentista.setEmail("teste@teste.com");
-        dentista.setTelefone("8888888888");
-        dentista.setRua("Rua Teste");
-        dentista.setNumero("123");
-        dentista.setBairro("Centro");
-        dentista.setCidade("Cidade Teste");
-        dentista.setDataNascimento(LocalDate.of(1990, 1, 1));
-        dentista.setCro("CRO12345");
-        dentista.setEspecialidade("Ortodontia");
-
-        dentistaDAO.salvar(dentista);
-        return ResponseEntity.ok("Conexão funcionando e dentista salvo.");
-    }
-
+    // Método para excluir um dentista pelo CPF
     @DeleteMapping("/dentistas/{cpf}")
     @ResponseBody
     public String deletarDentista(@PathVariable String cpf) {
         dentistaDAO.deletarPorCpf(cpf);
         return "Dentista com CPF " + cpf + " deletado com sucesso.";
     }
+
+    @GetMapping("/dentista/editar/{cpf}")
+    public String editarDentista(@PathVariable String cpf, Model model) {
+        Dentista dentista = dentistaDAO.buscarPorCpf(cpf);
+        model.addAttribute("dentista", dentista);
+        return "editar-dentista";  // Nome da página de edição
+    }
+
+    // Método para salvar as alterações no dentista
+    @PostMapping("/dentista/editar")
+    public String salvarAlteracoes(Dentista dentista) {
+        dentistaDAO.atualizar(dentista);
+        return "redirect:/dentistas";  // Redireciona para a lista após a edição
+    }
+
 }
