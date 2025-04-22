@@ -28,18 +28,5 @@ Spring Boot
 
 JavaScript
 
-🗂️ Estrutura do Sistema
-Pessoa: nome, CPF, telefone, e-mail, endereço, data de nascimento.
-
-Funcionário: herda Pessoa. Subtipos: Dentista (CRO, especialidade) e Auxiliar Administrativo.
-
-Paciente: herda Pessoa.
-
-Consulta: data, horário início e fim, status de pagamento, método de pagamento, dentista responsável, procedimentos, histórico.
-
-Procedimento: código, nome, valor, pós-operatório.
-
-Histórico: diagnóstico, tratamentos, recomendações.
-
 📅 Objetivo
 Organizar e automatizar o agendamento de consultas odontológicas, eliminando conflitos e melhorando o controle sobre pacientes, procedimentos e pagamentos.
