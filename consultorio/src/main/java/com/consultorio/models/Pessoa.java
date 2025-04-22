@@ -8,6 +8,7 @@ public class Pessoa {
     private String nome;
     private String email;
     private String telefone;
+    private String telefone2;
     private String rua;
     private String numero;
     private String bairro;
@@ -54,6 +55,14 @@ public class Pessoa {
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
+    }
+
+    public String getTelefone2() {
+        return telefone2;
+    }
+
+    public void setTelefone2(String telefone2) {
+        this.telefone2 = telefone2;
     }
 
     public String getRua() {

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Paciente</title>
+</head>
+<body>
+<h1>Editar Paciente</h1>
+<form method="post" action="/paciente/editar">
+    <input type="hidden" name="cpf" th:value="${paciente.cpf}" />
+
+    Nome: <input type="text" name="nome" th:value="${paciente.nome}" required><br>
+    Email: <input type="email" name="email" th:value="${paciente.email}" required><br>
+    Telefone: <input type="text" name="telefone" th:value="${paciente.telefone}" required><br>
+    Telefone 2: <input type="text" id="telefone2" name="telefone2" th:value="${paciente.telefone2}"><br>
+    Rua: <input type="text" name="rua" th:value="${paciente.rua}" required><br>
+    Número: <input type="text" name="numero" th:value="${paciente.numero}" required><br>
+    Bairro: <input type="text" name="bairro" th:value="${paciente.bairro}" required><br>
+    Cidade: <input type="text" name="cidade" th:value="${paciente.cidade}" required><br>
+    Data de Nascimento: <input type="date" name="dataNascimento" th:value="${paciente.dataNascimento}" required><br>
+
+    <button type="submit">Salvar Alterações</button>
+</form>
+<br>
+<a href="/pacientes">Voltar para a lista</a>
+</body>
+</html>

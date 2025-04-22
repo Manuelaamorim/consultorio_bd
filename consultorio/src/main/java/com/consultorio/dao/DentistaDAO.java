@@ -14,13 +14,14 @@ public class DentistaDAO {
     private JdbcTemplate jdbcTemplate;
 
     public void salvar(Dentista dentista) {
-        String sql = "INSERT INTO Dentista (nome, cpf, telefone, email, rua, numero, bairro, cidade, data_nascimento, cro, especialidade) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Dentista (nome, cpf, telefone, telefone2, email, rua, numero, bairro, cidade, data_nascimento, cro, especialidade) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         jdbcTemplate.update(sql,
                 dentista.getNome(),
                 dentista.getCpf(),
                 dentista.getTelefone(),
+                dentista.getTelefone2(),
                 dentista.getEmail(),
                 dentista.getRua(),
                 dentista.getNumero(),
@@ -52,10 +53,11 @@ public class DentistaDAO {
     }
 
     public void atualizar(Dentista dentista) {
-        String sql = "UPDATE Dentista SET nome = ?, telefone = ?, email = ?, rua = ?, numero = ?, bairro = ?, cidade = ?, data_nascimento = ?, cro = ?, especialidade = ? WHERE cpf = ?";
+        String sql = "UPDATE Dentista SET nome = ?, telefone = ?, telefone2 = ?, email = ?, rua = ?, numero = ?, bairro = ?, cidade = ?, data_nascimento = ?, cro = ?, especialidade = ? WHERE cpf = ?";
         jdbcTemplate.update(sql,
                 dentista.getNome(),
                 dentista.getTelefone(),
+                dentista.getTelefone2(),
                 dentista.getEmail(),
                 dentista.getRua(),
                 dentista.getNumero(),
