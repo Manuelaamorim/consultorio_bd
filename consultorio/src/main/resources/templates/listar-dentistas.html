@@ -44,7 +44,7 @@
     function deletarDentista(button) {
         const cpf = button.getAttribute('data-cpf');
         if (confirm("Tem certeza que deseja excluir este dentista?")) {
-            fetch(`/dentistas/${cpf}`, {
+            fetch(`/dentista/deletar/${cpf}`, {
                 method: 'DELETE',
             })
             .then(response => response.text())
