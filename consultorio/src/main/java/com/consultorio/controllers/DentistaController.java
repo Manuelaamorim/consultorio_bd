@@ -1,7 +1,9 @@
 package com.consultorio.controllers;
 
 import com.consultorio.dao.DentistaDAO;
+import com.consultorio.dao.ProcedimentoDAO;
 import com.consultorio.models.Dentista;
+import com.consultorio.models.Procedimento;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,6 +18,9 @@ public class DentistaController {
 
     @Autowired
     private DentistaDAO dentistaDAO;
+
+    @Autowired
+    private ProcedimentoDAO procedimentoDAO;
 
     // Método para verificar se o usuário está logado como dentista
     private boolean verificaSessaoDentista(HttpSession session) {
@@ -82,5 +87,20 @@ public class DentistaController {
 
         dentistaDAO.atualizar(dentista);
         return "redirect:/dentista/listar";
+    }
+
+    @PostMapping("/procedimento/cadastrar")
+    public String cadastrarProcedimento(@ModelAttribute Procedimento procedimento, HttpSession session) {
+        if (verificaSessaoDentista(session)) return "redirect:/";
+        procedimentoDAO.salvar(procedimento);
+        return "redirect:/dentista/procedimentos"; // você vai criar essa tela pra listar depois
+    }
+
+    @GetMapping("/procedimentos")
+    public String listarProcedimentos(Model model, HttpSession session) {
+        if (verificaSessaoDentista(session)) return "redirect:/";
+
+        model.addAttribute("procedimentos", procedimentoDAO.listarTodos());
+        return "procedimentos"; // página HTML que vai mostrar os procedimentos
     }
 }
