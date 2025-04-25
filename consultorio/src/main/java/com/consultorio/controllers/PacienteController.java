@@ -16,14 +16,14 @@ public class PacienteController {
 
     @GetMapping("/paciente-form")
     public String mostrarFormulario() {
-        return "paciente-form.html"; // Arquivo que você deve criar em static/
+        return "paciente-form.html";
     }
 
     @GetMapping("/pacientes")
     public String listarPacientes(Model model) {
         List<Paciente> pacientes = pacienteDAO.listarPacientes();
         model.addAttribute("pacientes", pacientes);
-        return "listar-pacientes.html"; // Novo arquivo para listar pacientes
+        return "listar-pacientes.html";
     }
 
     @PostMapping("/pacientes")
@@ -44,7 +44,7 @@ public class PacienteController {
     public String editarPaciente(@PathVariable String cpf, Model model) {
         Paciente paciente = pacienteDAO.buscarPorCpf(cpf);
         model.addAttribute("paciente", paciente);
-        return "editar-paciente";  // Página de edição do paciente
+        return "editar-paciente";
     }
 
     @PostMapping("/paciente/editar")

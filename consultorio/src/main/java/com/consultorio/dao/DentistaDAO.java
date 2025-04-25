@@ -45,11 +45,8 @@ public class DentistaDAO {
 
     public Dentista buscarPorCpf(String cpf) {
         String sql = "SELECT * FROM Dentista WHERE cpf = ?";
-        return jdbcTemplate.queryForObject(
-                sql,
-                new BeanPropertyRowMapper<>(Dentista.class),
-                cpf
-        );
+        List<Dentista> resultado = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Dentista.class), cpf);
+        return resultado.isEmpty() ? null : resultado.get(0);
     }
 
     public void atualizar(Dentista dentista) {
@@ -66,7 +63,7 @@ public class DentistaDAO {
                 dentista.getDataNascimento(),
                 dentista.getCro(),
                 dentista.getEspecialidade(),
-                dentista.getCpf()  // Necessário para identificar o dentista a ser atualizado
+                dentista.getCpf()
         );
     }
 }

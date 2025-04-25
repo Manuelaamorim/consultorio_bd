@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login / Cadastro</title>
+</head>
+<body>
+<h2>Login</h2>
+<form method="post" action="/login">
+    <label>CPF:</label>
+    <input type="text" name="cpf" required><br>
+    <label>Email:</label>
+    <input type="email" name="email" required><br>
+    <button type="submit">Entrar</button>
+</form>
+
+<div th:if="${erro}">
+    <p th:text="${erro}" style="color: red;"></p>
+</div>
+
+<hr>
+
+<h2>Cadastrar Dentista</h2>
+<form method="post" action="/cadastrar/dentista">
+    <input type="text" name="nome" placeholder="Nome" required><br>
+    <input type="text" name="cpf" placeholder="CPF" required><br>
+    <input type="text" name="telefone" placeholder="Telefone" required><br>
+    <input type="text" name="telefone2" placeholder="Telefone 2"><br>
+    <input type="email" name="email" placeholder="Email" required><br>
+    <input type="text" name="rua" placeholder="Rua"><br>
+    <input type="text" name="numero" placeholder="Número"><br>
+    <input type="text" name="bairro" placeholder="Bairro"><br>
+    <input type="text" name="cidade" placeholder="Cidade"><br>
+    <input type="date" name="dataNascimento" placeholder="Data de Nascimento"><br>
+    <input type="text" name="cro" placeholder="CRO"><br>
+    <input type="text" name="especialidade" placeholder="Especialidade"><br>
+    <button type="submit">Cadastrar Dentista</button>
+</form>
+
+<h2>Cadastrar Auxiliar</h2>
+<form method="post" action="/cadastrar/auxiliar">
+    <input type="text" name="nome" placeholder="Nome" required><br>
+    <input type="text" name="cpf" placeholder="CPF" required><br>
+    <input type="text" name="telefone" placeholder="Telefone" required><br>
+    <input type="text" name="telefone2" placeholder="Telefone 2"><br>
+    <input type="email" name="email" placeholder="Email" required><br>
+    <input type="text" name="rua" placeholder="Rua"><br>
+    <input type="text" name="numero" placeholder="Número"><br>
+    <input type="text" name="bairro" placeholder="Bairro"><br>
+    <input type="text" name="cidade" placeholder="Cidade"><br>
+    <input type="date" name="dataNascimento" placeholder="Data de Nascimento"><br>
+    <button type="submit">Cadastrar Auxiliar</button>
+</form>
+
+<div th:if="${mensagem}">
+    <p th:text="${mensagem}" style="color: green;"></p>
+</div>
+</body>
+</html>

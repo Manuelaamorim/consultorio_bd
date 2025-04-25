@@ -22,7 +22,6 @@ public class Pessoa {
         this.id = id;
     }
 
-
     public String getCpf() {
         return cpf;
     }

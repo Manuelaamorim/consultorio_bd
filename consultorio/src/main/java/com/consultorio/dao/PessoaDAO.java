@@ -26,6 +26,6 @@ public class PessoaDAO {
                 pessoa.getNumero(),
                 pessoa.getBairro(),
                 pessoa.getCidade(),
-                Date.valueOf(pessoa.getDataNascimento())); // se for LocalDate
+                Date.valueOf(pessoa.getDataNascimento()));
     }
 }

@@ -21,15 +21,19 @@ public class DentistaController {
         return "dentista-form.html"; // Arquivo tem que estar em src/main/resources/static/
     }
 
+    @GetMapping("/dentista")
+    public String mostrarHome() {
+        return "dentista.html";
+    }
+
     // Método para listar todos os dentistas
     @GetMapping("/dentistas")
     public String listarDentistas(Model model) {
-        List<Dentista> dentistas = dentistaDAO.listarDentistas(); // Método para buscar todos os dentistas
+        List<Dentista> dentistas = dentistaDAO.listarDentistas();
         model.addAttribute("dentistas", dentistas);
-        return "listar-dentistas.html"; // Nova página HTML para listar os dentistas
+        return "listar-dentistas.html";
     }
 
-    // Recebe os dados do formulário e adiciona o dentista
     @PostMapping("/dentistas")
     @ResponseBody
     public String adicionarDentista(@RequestBody Dentista dentista) {
@@ -56,7 +60,7 @@ public class DentistaController {
     @PostMapping("/dentista/editar")
     public String salvarAlteracoes(Dentista dentista) {
         dentistaDAO.atualizar(dentista);
-        return "redirect:/dentistas";  // Redireciona para a lista após a edição
+        return "redirect:/dentistas";
     }
 
 }
