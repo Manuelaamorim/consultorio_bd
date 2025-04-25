@@ -2,22 +2,29 @@ package com.consultorio.controllers;
 
 import com.consultorio.dao.AuxiliarDAO;
 import com.consultorio.dao.DentistaDAO;
-import com.consultorio.models.Dentista;
+import com.consultorio.models.Auxiliar;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Controller
+@RequestMapping("/auxiliar")
 public class AuxiliarController {
 
-    @Autowired
-    private AuxiliarDAO auxiliarDAO;
+    // Método para verificar se o usuário está logado como auxiliar
+    private boolean verificaSessaoAuxiliar(HttpSession session) {
+        return session.getAttribute("usuario") != null &&
+                !"auxiliar".equals(session.getAttribute("tipo"));
+    }
 
-    @GetMapping("/auxiliar")
-    public String mostrarHome() {
+    @GetMapping("")
+    public String mostrarHome(HttpSession session, Model model) {
+        if (verificaSessaoAuxiliar(session)) {
+            model.addAttribute("erro", "Faça login antes.");
+            return "redirect:/";
+        }
         return "auxiliar.html";
     }
 }

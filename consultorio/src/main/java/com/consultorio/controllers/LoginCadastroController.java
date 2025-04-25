@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class LoginCadastroController {
@@ -18,18 +19,18 @@ public class LoginCadastroController {
     @Autowired
     private AuxiliarDAO auxiliarDAO;
 
-    @GetMapping("/login")
+    @GetMapping("/")
     public String exibirLogin(Model model) {
         return "login";
     }
 
     @PostMapping("/login")
-    public String processarLogin(@RequestParam String cpf, @RequestParam String email, Model model) {
+    public String processarLogin(@RequestParam String cpf, @RequestParam String email, HttpSession session, Model model) {
         try {
             Dentista dentista = dentistaDAO.buscarPorCpf(cpf);
             if (dentista != null && dentista.getEmail().equalsIgnoreCase(email)) {
-                model.addAttribute("usuario", dentista);
-                model.addAttribute("tipo", "dentista");
+                session.setAttribute("usuario", dentista);
+                session.setAttribute("tipo", "dentista");
                 return "redirect:/dentista";
             }
         } catch (Exception ignored) {}
@@ -37,8 +38,8 @@ public class LoginCadastroController {
         try {
             Auxiliar auxiliar = auxiliarDAO.buscarPorCpfEEmail(cpf, email);
             if (auxiliar != null) {
-                model.addAttribute("usuario", auxiliar);
-                model.addAttribute("tipo", "auxiliar");
+                session.setAttribute("usuario", auxiliar);
+                session.setAttribute("tipo", "auxiliar");
                 return "redirect:/auxiliar";
             }
         } catch (Exception ignored) {}
@@ -69,5 +70,13 @@ public class LoginCadastroController {
         auxiliarDAO.salvar(auxiliar);
         model.addAttribute("mensagem", "Auxiliar cadastrado com sucesso!");
         return "login";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        if (session != null) {
+            session.invalidate(); // Invalidando a sessão corretamente
+        }
+        return "redirect:/"; // Redireciona para o login
     }
 }
