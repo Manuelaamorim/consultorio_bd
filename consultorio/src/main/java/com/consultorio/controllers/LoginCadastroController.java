@@ -24,6 +24,11 @@ public class LoginCadastroController {
         return "login";
     }
 
+    @GetMapping("/cadastro")
+    public String exibirCadastro(Model model) {
+        return "cadastro";
+    }
+
     @PostMapping("/login")
     public String processarLogin(@RequestParam String cpf, @RequestParam String email, HttpSession session, Model model) {
         try {
@@ -52,24 +57,24 @@ public class LoginCadastroController {
     public String cadastrarDentista(@ModelAttribute Dentista dentista, Model model) {
         if (dentistaDAO.buscarPorCpf(dentista.getCpf()) != null) {
             model.addAttribute("erro", "CPF já cadastrado");
-            return "login";
+            return "cadastro";
         }
 
         dentistaDAO.salvar(dentista);
         model.addAttribute("mensagem", "Dentista cadastrado com sucesso!");
-        return "login";
+        return "cadastro";
     }
 
     @PostMapping("/cadastrar/auxiliar")
     public String cadastrarAuxiliar(@ModelAttribute Auxiliar auxiliar, Model model) {
         if (auxiliarDAO.buscarPorCpf(auxiliar.getCpf()) != null) {
             model.addAttribute("erro", "CPF já cadastrado");
-            return "login";
+            return "cadastro";
         }
 
         auxiliarDAO.salvar(auxiliar);
         model.addAttribute("mensagem", "Auxiliar cadastrado com sucesso!");
-        return "login";
+        return "cadastro";
     }
 
     @GetMapping("/logout")

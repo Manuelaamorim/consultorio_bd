@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro</title>
+    <link rel="stylesheet" href="cadastro.css">
+</head>
+<body onload="mostrarCadastro('dentista')">
+<div class="container">
+
+    <h1>Cadastrar</h1>
+
+    <div class="form-selector">
+        <label class="option">
+            <input type="radio" id="radio-dentista" name="tipo" value="dentista" checked onchange="mostrarCadastro('dentista')">
+            <span class="dot"></span>
+            <span class="label-text">Dentista</span>
+        </label>
+
+        <label class="option">
+            <input type="radio" id="radio-auxiliar" name="tipo" value="auxiliar" onchange="mostrarCadastro('auxiliar')">
+            <span class="dot"></span>
+            <span class="label-text">Auxiliar administrativo</span>
+        </label>
+    </div>
+
+    <div id="cadastro-dentista" class="form-container">
+        <form method="post" action="/cadastrar/dentista">
+            <input type="text" name="nome" placeholder="Nome" required>
+            <input type="text" name="cpf" placeholder="CPF" required>
+            <input type="text" name="telefone" placeholder="Telefone" required>
+            <input type="text" name="telefone2" placeholder="Telefone 2">
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="text" name="rua" placeholder="Rua">
+            <input type="text" name="numero" placeholder="Número">
+            <input type="text" name="bairro" placeholder="Bairro">
+            <input type="text" name="cidade" placeholder="Cidade">
+            <input type="date" name="dataNascimento">
+            <input type="text" name="cro" placeholder="CRO">
+            <input type="text" name="especialidade" placeholder="Especialidade">
+            <button type="submit">Cadastrar Dentista</button>
+        </form>
+    </div>
+
+    <div id="cadastro-auxiliar" class="form-container" style="display: none;">
+        <form method="post" action="/cadastrar/auxiliar">
+            <input type="text" name="nome" placeholder="Nome" required>
+            <input type="text" name="cpf" placeholder="CPF" required>
+            <input type="text" name="telefone" placeholder="Telefone" required>
+            <input type="text" name="telefone2" placeholder="Telefone 2">
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="text" name="rua" placeholder="Rua">
+            <input type="text" name="numero" placeholder="Número">
+            <input type="text" name="bairro" placeholder="Bairro">
+            <input type="text" name="cidade" placeholder="Cidade">
+            <input type="date" name="dataNascimento">
+            <button type="submit">Cadastrar Auxiliar</button>
+        </form>
+    </div>
+
+    <div th:if="${mensagem}">
+        <p class="mensagem" th:text="${mensagem}"></p>
+    </div>
+
+    <div th:if="${erro}">
+        <p class="erro" th:text="${erro}"></p>
+    </div>
+
+    <p class="back-link"> Já possui uma conta? <a href="/">Fazer Login</a></p>
+</div>
+
+<script>
+    function mostrarCadastro(tipo) {
+        const dentistaForm = document.getElementById('cadastro-dentista');
+        const auxiliarForm = document.getElementById('cadastro-auxiliar');
+
+        dentistaForm.style.display = 'none';
+        auxiliarForm.style.display = 'none';
+
+        if (tipo === 'dentista') {
+            dentistaForm.style.display = 'block';
+            document.getElementById('radio-dentista').checked = true;
+        } else {
+            auxiliarForm.style.display = 'block';
+            document.getElementById('radio-auxiliar').checked = true;
+        }
+    }
+</script>
+</body>
+</html>
