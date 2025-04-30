@@ -80,8 +80,8 @@ public class LoginCadastroController {
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         if (session != null) {
-            session.invalidate(); // Invalidando a sessão corretamente
+            session.invalidate();
         }
-        return "redirect:/"; // Redireciona para o login
+        return "redirect:/";
     }
 }

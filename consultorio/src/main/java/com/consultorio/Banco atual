@@ -61,3 +61,17 @@ CREATE TABLE procedimento (
     pos_operatorio TEXT,
     valor DECIMAL(10,2) NOT NULL
 );
+
+CREATE TABLE consulta (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    data DATE NOT NULL,
+    horario_inicio TIME NOT NULL,
+    horario_termino TIME NOT NULL,
+    status_pagamento VARCHAR(20) NOT NULL,
+    metodo_pagamento VARCHAR(20) NOT NULL,
+    id_paciente INT NOT NULL,
+    id_dentista INT NOT NULL,
+    FOREIGN KEY (id_paciente) REFERENCES paciente(id),
+    FOREIGN KEY (id_dentista) REFERENCES dentista(id)
+);
+
