@@ -1,0 +1,46 @@
+<!-- consulta-form.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nova Consulta</title>
+</head>
+<body>
+<h1>Agendar Consulta</h1>
+<form method="post" action="/auxiliar/consultas">
+    <label>Data:</label>
+    <input type="date" name="data" required>
+
+    <label>Horário Início:</label>
+    <input type="time" name="horarioInicio" required>
+
+    <label>Horário Término:</label>
+    <input type="time" name="horarioTermino" required>
+
+    <label>Status Pagamento:</label>
+    <input type="text" name="statusPagamento" required>
+
+    <label>Método Pagamento:</label>
+    <input type="text" name="metodoPagamento" required>
+
+    <label>Paciente:</label>
+    <select name="idPaciente" required>
+        <option value="">Selecione</option>
+        <th:block th:each="paciente : ${pacientes}">
+            <option th:value="${paciente.id}" th:text="${paciente.nome}"></option>
+        </th:block>
+    </select>
+
+    <label>Dentista:</label>
+    <select name="idDentista" required>
+        <option value="">Selecione</option>
+        <th:block th:each="dentista : ${dentistas}">
+            <option th:value="${dentista.id}" th:text="${dentista.nome}"></option>
+        </th:block>
+    </select>
+
+    <button type="submit">Agendar Consulta</button>
+</form>
+
+</body>
+</html>
