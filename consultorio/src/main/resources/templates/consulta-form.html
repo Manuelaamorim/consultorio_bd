@@ -1,46 +1,73 @@
-<!-- consulta-form.html -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <title>Nova Consulta</title>
+    <link rel="stylesheet" th:href="@{/consulta-form.css}">
 </head>
 <body>
-<h1>Agendar Consulta</h1>
-<form method="post" action="/auxiliar/consultas">
-    <label>Data:</label>
-    <input type="date" name="data" required>
 
-    <label>Horário Início:</label>
-    <input type="time" name="horarioInicio" required>
+<header class="navbar">
+    <div class="logo">Consultório Aida Cavalcanti</div>
+    <nav class="nav-links">
+        <a th:href="@{/dentista/consultas-dentista}" class="nav-link">Consultas</a>
+        <a th:href="@{/dentista/pacientes}" class="nav-link">Pacientes</a>
+        <a th:href="@{/dentista/procedimentos}" class="nav-link">Procedimentos</a>
+    </nav>
+</header>
 
-    <label>Horário Término:</label>
-    <input type="time" name="horarioTermino" required>
+<main class="conteudo">
+    <h1>Agendar Consulta</h1>
 
-    <label>Status Pagamento:</label>
-    <input type="text" name="statusPagamento" required>
+    <form method="post" action="/auxiliar/consultas" class="formulario">
+        <div class="campo">
+            <label for="data">Data:</label>
+            <input type="date" id="data" name="data" required>
+        </div>
 
-    <label>Método Pagamento:</label>
-    <input type="text" name="metodoPagamento" required>
+        <div class="campo">
+            <label for="horarioInicio">Horário Início:</label>
+            <input type="time" id="horarioInicio" name="horarioInicio" required>
+        </div>
 
-    <label>Paciente:</label>
-    <select name="idPaciente" required>
-        <option value="">Selecione</option>
-        <th:block th:each="paciente : ${pacientes}">
-            <option th:value="${paciente.id}" th:text="${paciente.nome}"></option>
-        </th:block>
-    </select>
+        <div class="campo">
+            <label for="horarioTermino">Horário Término:</label>
+            <input type="time" id="horarioTermino" name="horarioTermino" required>
+        </div>
 
-    <label>Dentista:</label>
-    <select name="idDentista" required>
-        <option value="">Selecione</option>
-        <th:block th:each="dentista : ${dentistas}">
-            <option th:value="${dentista.id}" th:text="${dentista.nome}"></option>
-        </th:block>
-    </select>
+        <div class="campo">
+            <label for="statusPagamento">Status Pagamento:</label>
+            <input type="text" id="statusPagamento" name="statusPagamento" required>
+        </div>
 
-    <button type="submit">Agendar Consulta</button>
-</form>
+        <div class="campo">
+            <label for="metodoPagamento">Método Pagamento:</label>
+            <input type="text" id="metodoPagamento" name="metodoPagamento" required>
+        </div>
+
+        <div class="campo">
+            <label for="idPaciente">Paciente:</label>
+            <select id="idPaciente" name="idPaciente" required>
+                <option value="">Selecione</option>
+                <th:block th:each="paciente : ${pacientes}">
+                    <option th:value="${paciente.id}" th:text="${paciente.nome}"></option>
+                </th:block>
+            </select>
+        </div>
+
+        <div class="campo">
+            <label for="idDentista">Dentista:</label>
+            <select id="idDentista" name="idDentista" required>
+                <option value="">Selecione</option>
+                <th:block th:each="dentista : ${dentistas}">
+                    <option th:value="${dentista.id}" th:text="${dentista.nome}"></option>
+                </th:block>
+            </select>
+        </div>
+
+        <button type="submit" class="botao-submit">Agendar</button>
+    </form>
+</main>
 
 </body>
 </html>

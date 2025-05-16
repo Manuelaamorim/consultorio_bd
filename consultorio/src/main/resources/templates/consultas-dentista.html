@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Consultas</title>
+    <link rel="stylesheet" th:href="@{/consultas-dentista.css}">
+</head>
+<body>
+
+<header class="navbar">
+    <div class="logo">Consultório</div>
+    <nav class="nav-links">
+        <a th:href="@{/dentista/consultas-dentista}" class="nav-link">Consultas</a>
+        <a th:href="@{/dentista/pacientes}" class="nav-link">Pacientes</a>
+        <a th:href="@{/dentista/procedimentos}" class="nav-link">Procedimentos</a>
+    </nav>
+
+</header>
+
+<main class="conteudo">
+    <h1>Visualização de Consultas</h1>
+    <p>Aqui você pode visualizar todas as consultas agendadas.</p>
+
+    <a th:href="@{/dentista/consulta-form}" class="botao-cadastro">Cadastrar Consulta</a>
+</main>
+
+</body>
+</html>

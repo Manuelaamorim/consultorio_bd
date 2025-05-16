@@ -1,0 +1,88 @@
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+.navbar {
+    background-color: #fefefe;
+    border-bottom: 1px solid #ddd;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #444;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #000;
+}
+
+.conteudo {
+    padding: 4rem 2rem 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    color: #222;
+}
+
+.formulario {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 0.4rem;
+    font-weight: 500;
+}
+
+input, select {
+    padding: 0.6rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.botao-submit {
+    margin-top: 1.5rem;
+    padding: 0.7rem;
+    font-size: 1rem;
+    background-color: #2d6cdf;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.botao-submit:hover {
+    background-color: #1f52b6;
+}

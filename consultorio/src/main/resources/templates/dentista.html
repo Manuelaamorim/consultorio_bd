@@ -3,9 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <title>Página do Dentista</title>
+  <link rel="stylesheet" th:href="@{/dentista.css}">
 </head>
 <body>
-<h1>Bem-vindo, Dentista!</h1>
-<p>Você está na página do Dentista.</p>
+<header class="navbar">
+  <div class="logo">Consultório Aida Cavalcanti</div>
+  <nav class="nav-links">
+    <a th:href="@{/dentista/consultas-dentista}" class="nav-link">Consultas</a>
+    <a th:href="@{/dentista/pacientes}" class="nav-link">Pacientes</a>
+    <a th:href="@{/dentista/procedimentos}" class="nav-link">Procedimentos</a>
+  </nav>
+
+</header>
+
+<main class="conteudo">
+  <h1>Bem-vindo, Dentista!</h1>
+  <p>Você está na página do Dentista.</p>
+</main>
 </body>
 </html>

@@ -103,4 +103,15 @@ public class DentistaController {
         model.addAttribute("procedimentos", procedimentoDAO.listarTodos());
         return "procedimentos"; // página HTML que vai mostrar os procedimentos
     }
+
+    @GetMapping("/consultas-dentista")
+    public String consultasDentista() {
+        return "consultas-dentista"; // sem .html, o Thymeleaf resolve automaticamente
+    }
+
+    @GetMapping("/consulta-form")
+    public String mostrarFormularioConsulta(HttpSession session) {
+        if (verificaSessaoDentista(session)) return "redirect:/";
+        return "consulta-form"; // Thymeleaf resolve para consulta-form.html
+    }
 }
