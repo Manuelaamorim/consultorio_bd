@@ -114,4 +114,5 @@ public class DentistaController {
         if (verificaSessaoDentista(session)) return "redirect:/";
         return "consulta-form"; // Thymeleaf resolve para consulta-form.html
     }
+
 }
