@@ -1,7 +1,9 @@
 package com.consultorio.controllers;
 
+import com.consultorio.dao.ConsultaDAO;
 import com.consultorio.dao.DentistaDAO;
 import com.consultorio.dao.ProcedimentoDAO;
+import com.consultorio.models.Consulta;
 import com.consultorio.models.Dentista;
 import com.consultorio.models.Procedimento;
 import jakarta.servlet.http.HttpSession;
@@ -21,6 +23,9 @@ public class DentistaController {
 
     @Autowired
     private ProcedimentoDAO procedimentoDAO;
+
+    @Autowired
+    private ConsultaDAO consultaDAO;
 
     // Método para verificar se o usuário está logado como dentista
     private boolean verificaSessaoDentista(HttpSession session) {
@@ -115,4 +120,16 @@ public class DentistaController {
         return "consulta-form"; // Thymeleaf resolve para consulta-form.html
     }
 
+    @GetMapping("/consultas")
+    public String listarConsultasDoDentista(HttpSession session, Model model) {
+        if (verificaSessaoDentista(session)) return "redirect:/";
+
+        Dentista dentistaLogado = (Dentista) session.getAttribute("usuario");
+        String cpf = dentistaLogado.getCpf();
+
+        List<Consulta> consultas = consultaDAO.listarPorCpfDentista(cpf);
+        model.addAttribute("consultas", consultas);
+
+        return "consultas-dentista"; // HTML que vai exibir as consultas
+    }
 }

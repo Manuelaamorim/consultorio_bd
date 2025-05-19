@@ -32,4 +32,14 @@ public class ConsultaDAO {
         String sql = "SELECT * FROM consulta";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Consulta.class));
     }
+
+    public List<Consulta> listarPorCpfDentista(String cpfDentista) {
+        String sql = """
+        SELECT c.* FROM consulta c
+        JOIN dentista d ON c.id_dentista = d.id
+        WHERE d.cpf = ?
+        """;
+
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Consulta.class), cpfDentista);
+    }
 }

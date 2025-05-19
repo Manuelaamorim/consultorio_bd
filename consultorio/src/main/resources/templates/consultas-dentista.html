@@ -10,7 +10,7 @@
 <header class="navbar">
     <div class="logo">Consultório Aida Cavalcanti</div>
     <nav class="nav-links">
-        <a th:href="@{/dentista/consultas-dentista}" class="nav-link">Consultas</a>
+        <a th:href="@{/dentista/consultas}" class="nav-link">Consultas</a>
         <a th:href="@{/dentista/pacientes}" class="nav-link">Pacientes</a>
         <a th:href="@{/dentista/procedimentos}" class="nav-link">Procedimentos</a>
     </nav>
@@ -21,8 +21,30 @@
     <h1>Visualização de Consultas</h1>
     <p>Aqui você pode visualizar todas as consultas agendadas.</p>
 
-    <a th:href="@{/dentista/consulta-form}" class="botao-cadastro">Cadastrar Consulta</a>
+    <table>
+        <thead>
+        <tr>
+            <th>Data</th>
+            <th>Início</th>
+            <th>Término</th>
+            <th>Status</th>
+            <th>Pagamento</th>
+            <th>ID Paciente</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="consulta : ${consultas}">
+            <td th:text="${consulta.data}"></td>
+            <td th:text="${consulta.horarioInicio}"></td>
+            <td th:text="${consulta.horarioTermino}"></td>
+            <td th:text="${consulta.statusPagamento}"></td>
+            <td th:text="${consulta.metodoPagamento}"></td>
+            <td th:text="${consulta.idPaciente}"></td>
+        </tr>
+        </tbody>
+    </table>
 </main>
+
 
 </body>
 </html>
