@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import jakarta.servlet.http.HttpSession;
+
 
 import java.util.List;
 
@@ -15,22 +17,48 @@ public class PacienteController {
     private PacienteDAO pacienteDAO;
 
     @GetMapping("/paciente-form")
-    public String mostrarFormulario() {
-        return "paciente-form.html";
+    public String mostrarFormularioPaciente(HttpSession session, Model model) {
+        Object usuario = session.getAttribute("usuario");
+        String tipo = (String) session.getAttribute("tipo");
+
+        if (usuario == null || tipo == null) {
+            return "redirect:/";
+        }
+
+        if ("dentista".equals(tipo)) {
+            return "paciente-form-dentista"; // HTML exclusivo do dentista
+        } else if ("auxiliar".equals(tipo)) {
+            return "paciente-form-auxiliar"; // HTML exclusivo do auxiliar
+        } else {
+            return "redirect:/";
+        }
     }
 
     @GetMapping("/pacientes")
-    public String listarPacientes(Model model) {
+    public String listarPacientes(Model model, HttpSession session) {
+        Object usuario = session.getAttribute("usuario");
+        String tipo = (String) session.getAttribute("tipo");
+
+        if (usuario == null || tipo == null) {
+            return "redirect:/";
+        }
+
         List<Paciente> pacientes = pacienteDAO.listarPacientes();
         model.addAttribute("pacientes", pacientes);
-        return "listar-pacientes.html";
+
+        if ("dentista".equals(tipo)) {
+            return "listar-pacientes-dentista"; // HTML exclusivo do dentista
+        } else if ("auxiliar".equals(tipo)) {
+            return "listar-pacientes-auxiliar"; // HTML exclusivo do auxiliar
+        } else {
+            return "redirect:/";
+        }
     }
 
     @PostMapping("/pacientes")
-    @ResponseBody
-    public String adicionarPaciente(@RequestBody Paciente paciente) {
+    public String adicionarPaciente(Paciente paciente) {
         pacienteDAO.salvar(paciente);
-        return "Paciente salvo com sucesso!";
+        return "redirect:/pacientes"; // ou renderize um HTML de sucesso
     }
 
     @DeleteMapping("/pacientes/{cpf}")

@@ -3,9 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Página do Auxiliar</title>
+    <link rel="stylesheet" th:href="@{/dentista.css}">
 </head>
 <body>
-<h1>Bem-vindo, Auxiliar!</h1>
-<p>Você está na página do Auxiliar.</p>
+<header class="navbar">
+    <div class="logo">Consultório Aida Cavalcanti</div>
+    <nav class="nav-links">
+        <a th:href="@{/}" class="nav-link">Consultas</a>
+        <a th:href="@{/}" class="nav-link">Pacientes</a>
+        <a th:href="@{/logout}" class="nav-link">Sair</a>
+    </nav>
+
+</header>
+
+<main class="conteudo">
+    <h1>Bem-vindo, Auxiliar!</h1>
+    <p>Você está na página do Auxiliar.</p>
+</main>
 </body>
 </html>

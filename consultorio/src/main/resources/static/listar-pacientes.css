@@ -1,0 +1,60 @@
+.tabela-container {
+  padding: 100px 30px 40px;
+}
+
+.titulo {
+  font-size: 2em;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #3a2e2e;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 auto;
+  background-color: #fffdf9;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+th {
+  background-color: #f0e8d9;
+  color: #3a2e2e;
+  font-weight: 600;
+}
+
+td {
+  color: #3a2e2e;
+}
+
+.btn {
+  display: inline-block;
+  min-width: 80px;
+  text-align: center;
+  background-color: #a28b63;
+  color: white;
+  padding: 6px 12px;
+  margin: 2px;
+  border: none;
+  border-radius: 4px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 0.9em;
+}
+
+.btn:hover {
+  background-color: #8c7856;
+}
+
+
+.cadastro-link {
+  text-align: center;
+  margin-top: 20px;
+}
