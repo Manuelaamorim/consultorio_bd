@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Consultas</title>
-    <link rel="stylesheet" th:href="@{/consultas-dentista.css}">
+    <title>Consultas - Dentista</title>
+    <link rel="stylesheet" th:href="@{/dentista.css}">
+    <link rel="stylesheet" th:href="@{/listar-pacientes.css}">
 </head>
 <body>
 
@@ -15,39 +16,38 @@
         <a th:href="@{/dentista/procedimentos}" class="nav-link">Procedimentos</a>
         <a th:href="@{/logout}" class="nav-link">Sair</a>
     </nav>
-
 </header>
 
-<main class="conteudo">
-    <h1>Visualização de Consultas</h1>
-    <p>Aqui você pode visualizar todas as consultas agendadas.</p>
-
+<main class="tabela-container">
+    <h1 class="titulo">Consultas Agendadas</h1>
     <table>
         <thead>
         <tr>
+            <th>ID Paciente</th>
             <th>Data</th>
             <th>Início</th>
             <th>Término</th>
             <th>Status</th>
             <th>Pagamento</th>
-            <th>ID Paciente</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="consulta : ${consultas}">
+            <td th:text="${consulta.idPaciente}"></td>
             <td th:text="${consulta.data}"></td>
             <td th:text="${consulta.horarioInicio}"></td>
             <td th:text="${consulta.horarioTermino}"></td>
             <td th:text="${consulta.statusPagamento}"></td>
             <td th:text="${consulta.metodoPagamento}"></td>
-            <td th:text="${consulta.idPaciente}"></td>
+
         </tr>
         </tbody>
     </table>
 
-    <a th:href="@{/dentista/consulta-form}" class="botao-cadastro">Cadastrar Consulta</a>
+    <div class="cadastro-link">
+        <a th:href="@{/dentista/consulta-form}" class="btn">Cadastrar Consulta</a>
+    </div>
 </main>
-
 
 </body>
 </html>
