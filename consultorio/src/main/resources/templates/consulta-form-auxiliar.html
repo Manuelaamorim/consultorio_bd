@@ -10,17 +10,16 @@
 <header class="navbar">
     <div class="logo">Consultório Aida Cavalcanti</div>
     <nav class="nav-links">
-        <a th:href="@{/dentista/consultas}" class="nav-link">Consultas</a>
+        <a th:href="@{/auxiliar/consultas}" class="nav-link">Consultas</a>
         <a th:href="@{/pacientes}" class="nav-link">Pacientes</a>
-        <a th:href="@{/dentista/procedimentos}" class="nav-link">Procedimentos</a>
         <a th:href="@{/logout}" class="nav-link">Sair</a>
     </nav>
 </header>
 
 <main class="conteudo">
     <h1>Agendar Consulta</h1>
-    <form method="post" action="/dentista/consultas" class="formulario">
-    <div class="campo">
+    <form method="post" action="/auxiliar/consultas" class="formulario">
+        <div class="campo">
             <label for="data">Data:</label>
             <input type="date" id="data" name="data" required>
         </div>
@@ -68,7 +67,7 @@
         <button type="submit" class="botao-submit">Agendar Consulta</button>
     </form>
 
-    <a href="/dentista/consultas" class="botao-voltar">Voltar</a>
+    <a href="/auxiliar/consultas" class="botao-voltar">Voltar</a>
 </main>
 
 </body>

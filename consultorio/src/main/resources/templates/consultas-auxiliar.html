@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Consultas - Auxiliar</title>
+    <link rel="stylesheet" th:href="@{/dentista.css}">
+    <link rel="stylesheet" th:href="@{/listar-pacientes.css}">
+</head>
+<body>
+
+<header class="navbar">
+    <div class="logo">Consultório Aida Cavalcanti</div>
+    <nav class="nav-links">
+        <a th:href="@{/auxiliar/consultas}" class="nav-link">Consultas</a>
+        <a th:href="@{/pacientes}" class="nav-link">Pacientes</a>
+        <a th:href="@{/logout}" class="nav-link">Sair</a>
+    </nav>
+</header>
+
+<main class="tabela-container">
+    <h1 class="titulo">Consultas Agendadas</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>ID Paciente</th>
+            <th>Data</th>
+            <th>Início</th>
+            <th>Término</th>
+            <th>Status</th>
+            <th>Pagamento</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="consulta : ${consultas}">
+            <td th:text="${consulta.idPaciente}"></td>
+            <td th:text="${consulta.data}"></td>
+            <td th:text="${consulta.horarioInicio}"></td>
+            <td th:text="${consulta.horarioTermino}"></td>
+            <td th:text="${consulta.statusPagamento}"></td>
+            <td th:text="${consulta.metodoPagamento}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="cadastro-link">
+        <a th:href="@{/auxiliar/consultas/nova}" class="btn">Cadastrar Consulta</a>
+    </div>
+</main>
+
+</body>
+</html>

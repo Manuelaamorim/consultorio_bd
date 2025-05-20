@@ -13,6 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/auxiliar")
 public class AuxiliarController {
@@ -29,7 +31,7 @@ public class AuxiliarController {
     private Consulta consulta;
 
     private boolean verificaSessaoAuxiliar(HttpSession session) {
-        return session.getAttribute("usuario") != null &&
+        return session.getAttribute("usuario") == null ||
                 !"auxiliar".equals(session.getAttribute("tipo"));
     }
 
@@ -42,6 +44,19 @@ public class AuxiliarController {
         return "auxiliar.html";
     }
 
+
+    @GetMapping("/consultas")
+    public String listarConsultasAuxiliar(HttpSession session, Model model) {
+        if (verificaSessaoAuxiliar(session)) {
+            return "redirect:/";
+        }
+
+        List<Consulta> consultas = consultaDAO.listarTodas(); // ou criar um método específico para auxiliar
+        model.addAttribute("consultas", consultas);
+
+        return "consultas-auxiliar";
+    }
+
     @PostMapping("/consultas")
     public String criarConsulta(@ModelAttribute Consulta consulta, HttpSession session) {
         if (verificaSessaoAuxiliar(session)) {
@@ -49,7 +64,7 @@ public class AuxiliarController {
         }
 
         consultaDAO.salvar(consulta);
-        return "redirect:/auxiliar"; // ou alguma página de sucesso
+        return "redirect:/auxiliar/consultas"; // ou alguma página de sucesso
     }
 
     @GetMapping("/consultas/nova")
@@ -62,7 +77,7 @@ public class AuxiliarController {
         model.addAttribute("pacientes", pacienteDAO.listarPacientes());
         model.addAttribute("dentistas", dentistaDAO.listarDentistas());
 
-        return "consulta-form";
+        return "consulta-form-auxiliar";
     }
 
     @GetMapping("/pacientes/novo")
