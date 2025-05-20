@@ -7,8 +7,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpSession;
-
-
 import java.util.List;
 
 @Controller
@@ -69,11 +67,26 @@ public class PacienteController {
     }
 
     @GetMapping("/paciente/editar/{cpf}")
-    public String editarPaciente(@PathVariable String cpf, Model model) {
+    public String editarPaciente(@PathVariable String cpf, Model model, HttpSession session) {
+        Object usuario = session.getAttribute("usuario");
+        String tipo = (String) session.getAttribute("tipo");
+
+        if (usuario == null || tipo == null) {
+            return "redirect:/";
+        }
+
         Paciente paciente = pacienteDAO.buscarPorCpf(cpf);
         model.addAttribute("paciente", paciente);
-        return "editar-paciente";
+
+        if ("dentista".equals(tipo)) {
+            return "editar-paciente-dentista"; // HTML exclusivo do dentista
+        } else if ("auxiliar".equals(tipo)) {
+            return "editar-paciente-auxiliar"; // HTML exclusivo do auxiliar
+        } else {
+            return "redirect:/";
+        }
     }
+
 
     @PostMapping("/paciente/editar")
     public String salvarAlteracoes(Paciente paciente) {
