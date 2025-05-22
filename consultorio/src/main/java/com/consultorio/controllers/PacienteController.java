@@ -1,6 +1,8 @@
 package com.consultorio.controllers;
 
+import com.consultorio.dao.ConsultaDAO;
 import com.consultorio.dao.PacienteDAO;
+import com.consultorio.models.Consulta;
 import com.consultorio.models.Paciente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,9 @@ import java.util.List;
 public class PacienteController {
     @Autowired
     private PacienteDAO pacienteDAO;
+
+    @Autowired
+    private ConsultaDAO consultaDAO;
 
     @GetMapping("/paciente-form")
     public String mostrarFormularioPaciente(HttpSession session, Model model) {
@@ -92,5 +97,17 @@ public class PacienteController {
     public String salvarAlteracoes(Paciente paciente) {
         pacienteDAO.atualizar(paciente);
         return "redirect:/pacientes";
+    }
+
+    @GetMapping("/paciente/historico/{id}")
+    public String verHistoricoPaciente(@PathVariable("id") int pacienteId, Model model) {
+        List<Consulta> consultas = consultaDAO.listarPorPacienteId(pacienteId);
+        model.addAttribute("consultas", consultas);
+
+        // Se quiser mostrar dados do paciente na página:
+        Paciente paciente = pacienteDAO.buscarPorId(pacienteId);
+        model.addAttribute("paciente", paciente);
+
+        return "historico-paciente";  // JSP ou Thymeleaf, a view do histórico
     }
 }

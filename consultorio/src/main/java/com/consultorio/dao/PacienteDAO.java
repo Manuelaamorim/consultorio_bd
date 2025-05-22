@@ -62,4 +62,9 @@ public class PacienteDAO {
                 paciente.getDataNascimento(),
                 paciente.getCpf());
     }
+    public Paciente buscarPorId(int id) {
+        String sql = "SELECT * FROM paciente WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Paciente.class), id);
+    }
+
 }

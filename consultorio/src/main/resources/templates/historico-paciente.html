@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Histórico do Paciente</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+<header>
+    <a th:href="@{/pacientes}">Voltar à lista de pacientes</a>
+</header>
+
+<h1>Histórico de Consultas - <span th:text="${paciente.nome}"></span></h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>Data</th>
+        <th>Início</th>
+        <th>Término</th>
+        <th>Status Pagamento</th>
+        <th>Método Pagamento</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="consulta : ${consultas}">
+        <td th:text="${consulta.data}"></td>
+        <td th:text="${consulta.horarioInicio}"></td>
+        <td th:text="${consulta.horarioTermino}"></td>
+        <td th:text="${consulta.statusPagamento}"></td>
+        <td th:text="${consulta.metodoPagamento}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

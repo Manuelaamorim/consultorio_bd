@@ -49,6 +49,7 @@
             <td>
                 <a th:href="@{'/paciente/editar/' + ${paciente.cpf}}" class="btn">Editar</a>
                 <button type="button" class="btn" th:attr="data-cpf=${paciente.cpf}" onclick="deletarPaciente(this)">Deletar</button>
+                <a th:href="@{'/paciente/historico/' + ${paciente.id}}" class="btn">Histórico</a>
             </td>
         </tr>
         </tbody>

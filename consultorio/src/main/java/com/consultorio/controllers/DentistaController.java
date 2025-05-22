@@ -127,7 +127,6 @@ public class DentistaController {
     public String mostrarFormularioConsulta(HttpSession session, Model model) {
         if (verificaSessaoDentista(session)) return "redirect:/";
 
-        // 🔹 Adicionando pacientes e dentistas ao model
         model.addAttribute("pacientes", pacienteDAO.listarPacientes());
         model.addAttribute("dentistas", dentistaDAO.listarDentistas());
 

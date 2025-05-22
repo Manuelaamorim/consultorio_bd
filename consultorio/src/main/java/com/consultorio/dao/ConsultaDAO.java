@@ -42,4 +42,9 @@ public class ConsultaDAO {
 
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Consulta.class), cpfDentista);
     }
+
+    public List<Consulta> listarPorPacienteId(int idPaciente) {
+        String sql = "SELECT * FROM consulta WHERE id_paciente = ? ORDER BY data DESC, horario_inicio DESC";
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Consulta.class), idPaciente);
+    }
 }
