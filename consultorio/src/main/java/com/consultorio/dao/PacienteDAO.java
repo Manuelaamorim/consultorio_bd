@@ -5,8 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
-import java.sql.Date;
 import java.util.List;
 
 @Repository
@@ -16,8 +14,8 @@ public class PacienteDAO {
     private JdbcTemplate jdbcTemplate;
 
     public void salvar(Paciente paciente) {
-        String sql = "INSERT INTO Paciente (CPF, nome, email, telefone, telefone2, rua, numero, bairro, cidade, data_nascimento) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Paciente (CPF, nome, email, telefone, telefone2, rua, numero, bairro, cidade, data_nascimento, id_indicador) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         jdbcTemplate.update(sql,
                 paciente.getCpf(),
@@ -29,7 +27,8 @@ public class PacienteDAO {
                 paciente.getNumero(),
                 paciente.getBairro(),
                 paciente.getCidade(),
-                paciente.getDataNascimento()
+                paciente.getDataNascimento(),
+                paciente.getIdIndicador()
         );
     }
 
@@ -49,7 +48,7 @@ public class PacienteDAO {
     }
 
     public void atualizar(Paciente paciente) {
-        String sql = "UPDATE paciente SET nome = ?, email = ?, telefone = ?, telefone2 = ?, rua = ?, numero = ?, bairro = ?, cidade = ?, data_nascimento = ? WHERE cpf = ?";
+        String sql = "UPDATE paciente SET nome = ?, email = ?, telefone = ?, telefone2 = ?, rua = ?, numero = ?, bairro = ?, cidade = ?, data_nascimento = ?, id_indicador = ? WHERE cpf = ?";
         jdbcTemplate.update(sql,
                 paciente.getNome(),
                 paciente.getEmail(),
@@ -60,6 +59,7 @@ public class PacienteDAO {
                 paciente.getBairro(),
                 paciente.getCidade(),
                 paciente.getDataNascimento(),
+                paciente.getIdIndicador(),
                 paciente.getCpf());
     }
     public Paciente buscarPorId(int id) {
@@ -67,4 +67,8 @@ public class PacienteDAO {
         return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Paciente.class), id);
     }
 
+    public List<Paciente> listarIdENome() {
+        String sql = "SELECT id, nome FROM paciente";
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Paciente.class));
+    }
 }

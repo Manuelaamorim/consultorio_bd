@@ -69,6 +69,17 @@
             <input type="date" id="dataNascimento" name="dataNascimento" required>
         </div>
 
+        <div class="campo">
+            <label for="idIndicador">Paciente que indicou (opcional):</label>
+            <select id="idIndicador" name="idIndicador">
+                <option value="">Nenhum</option>
+                <option th:each="p : ${pacientes}"
+                        th:value="${p.id}"
+                        th:text="${p.nome}">
+                </option>
+            </select>
+        </div>
+
         <button type="submit" class="botao-submit">Cadastrar Paciente</button>
     </form>
 

@@ -28,10 +28,17 @@ public class PacienteController {
             return "redirect:/";
         }
 
+        // Adiciona lista de pacientes para o select
+        List<Paciente> pacientes = pacienteDAO.listarIdENome();
+
+        model.addAttribute("paciente", new Paciente());
+
+        model.addAttribute("pacientes", pacienteDAO.listarIdENome());
+
         if ("dentista".equals(tipo)) {
-            return "paciente-form-dentista"; // HTML exclusivo do dentista
+            return "paciente-form-dentista";
         } else if ("auxiliar".equals(tipo)) {
-            return "paciente-form-auxiliar"; // HTML exclusivo do auxiliar
+            return "paciente-form-auxiliar";
         } else {
             return "redirect:/";
         }
