@@ -14,7 +14,7 @@ public class DentistaDAO {
     private JdbcTemplate jdbcTemplate;
 
     public void salvar(Dentista dentista) {
-        String sql = "INSERT INTO Dentista (nome, cpf, telefone, telefone2, email, rua, numero, bairro, cidade, data_nascimento, cro, especialidade) " +
+        String sql = "INSERT INTO dentista (nome, cpf, telefone, telefone2, email, rua, numero, bairro, cidade, data_nascimento, cro, especialidade) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         jdbcTemplate.update(sql,
@@ -39,18 +39,18 @@ public class DentistaDAO {
     }
 
     public List<Dentista> listarDentistas() {
-        String sql = "SELECT * FROM Dentista";
+        String sql = "SELECT * FROM dentista";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Dentista.class));
     }
 
     public Dentista buscarPorCpf(String cpf) {
-        String sql = "SELECT * FROM Dentista WHERE cpf = ?";
+        String sql = "SELECT * FROM dentista WHERE cpf = ?";
         List<Dentista> resultado = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Dentista.class), cpf);
         return resultado.isEmpty() ? null : resultado.get(0);
     }
 
     public void atualizar(Dentista dentista) {
-        String sql = "UPDATE Dentista SET nome = ?, telefone = ?, telefone2 = ?, email = ?, rua = ?, numero = ?, bairro = ?, cidade = ?, data_nascimento = ?, cro = ?, especialidade = ? WHERE cpf = ?";
+        String sql = "UPDATE dentista SET nome = ?, telefone = ?, telefone2 = ?, email = ?, rua = ?, numero = ?, bairro = ?, cidade = ?, data_nascimento = ?, cro = ?, especialidade = ? WHERE cpf = ?";
         jdbcTemplate.update(sql,
                 dentista.getNome(),
                 dentista.getTelefone(),

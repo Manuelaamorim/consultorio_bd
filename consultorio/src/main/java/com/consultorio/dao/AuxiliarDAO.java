@@ -38,7 +38,7 @@ public class AuxiliarDAO {
     }
 
     public Auxiliar buscarPorCpf(String cpf) {
-        String sql = "SELECT * FROM Auxiliar WHERE cpf = ?";
+        String sql = "SELECT * FROM auxiliar WHERE cpf = ?";
         List<Auxiliar> resultado = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Auxiliar.class), cpf);
         return resultado.isEmpty() ? null : resultado.get(0);
     }
