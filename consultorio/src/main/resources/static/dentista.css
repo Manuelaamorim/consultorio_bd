@@ -57,3 +57,66 @@ body {
   padding: 100px 20px 40px;
   text-align: center;
 }
+
+.dashboard {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 40px;
+}
+
+.card {
+  background-color: #fffdf9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  width: 300px;
+  text-align: center;
+}
+
+    .card h2 {
+      margin-bottom: 15px;
+      color: #3a2e2e;
+    }
+
+    .chart-container {
+      width: 300px;
+      height: 300px;
+      margin: 0 auto;
+    }
+
+.comparativo {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #3a2e2e;
+}
+
+.grafico-consultas {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.chart-container-grande {
+  width: 80%;
+  max-width: 800px;
+  height: 400px;
+  margin: 20px auto;
+}
+
+.grafico-consultas h2 {
+  color: #3a2e2e;
+}
+
+.grafico-consultas label {
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  color: #3a2e2e;
+}
+
+.comparativo {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #3a2e2e;
+}

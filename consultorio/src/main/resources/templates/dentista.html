@@ -14,12 +14,196 @@
     <a th:href="@{/dentista/procedimentos}" class="nav-link">Procedimentos</a>
     <a th:href="@{/logout}" class="nav-link">Sair</a>
   </nav>
-
 </header>
 
 <main class="conteudo">
   <h1>Bem-vindo, Dentista!</h1>
-  <p>Você está na página do Dentista.</p>
+
+  <div class="dashboard">
+    <div class="card">
+      <h2>Consultas Hoje</h2>
+      <ul id="consultasHoje"></ul>
+    </div>
+
+    <div class="card">
+      <h2>Consultas no Mês</h2>
+      <p id="consultasMes">0</p>
+    </div>
+
+    <div class="card">
+      <h2>Status de Pagamento</h2>
+      <label for="periodo">Período:</label>
+      <select id="periodo">
+        <option value="geral">Geral</option>
+        <option value="dia">Dia</option>
+        <option value="mes">Mês</option>
+        <option value="ano">Ano</option>
+      </select>
+      <div class="chart-container">
+        <canvas id="statusPagamentoChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="grafico-consultas">
+    <h2>Consultas por Mês</h2>
+    <label for="anoSelect">Ano:</label>
+    <select id="anoSelect">
+      <option value="2023">2023</option>
+      <option value="2024" selected>2024</option>
+      <option value="2025">2025</option>
+    </select>
+    <div class="chart-container-grande">
+      <canvas id="consultasMesChart"></canvas>
+    </div>
+    <div class="comparativo" id="comparativoTexto"></div>
+  </div>
 </main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const dentistaId = 1; // Ajuste conforme o dentista logado
+
+  // Consultas Hoje
+  fetch(`/dashboard/consultas-hoje?dentistaId=${dentistaId}`)
+    .then(res => res.json())
+    .then(data => {
+      const ul = document.getElementById('consultasHoje');
+      data.forEach(c => {
+        const li = document.createElement('li');
+        li.textContent = `${c.nome} - ${c.horario_inicio} até ${c.horario_termino}`;
+        ul.appendChild(li);
+      });
+    });
+
+  // Consultas no Mês
+  fetch(`/dashboard/consultas-mes?dentistaId=${dentistaId}`)
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById('consultasMes').textContent = data;
+    });
+
+  // Status de Pagamento - Gráfico de Pizza
+  let statusChart;
+
+  function carregarStatusPagamento(periodo) {
+    fetch(`/dashboard/status-pagamento?dentistaId=${dentistaId}&periodo=${periodo}`)
+      .then(res => res.json())
+      .then(data => {
+        const ctx = document.getElementById('statusPagamentoChart').getContext('2d');
+        if (statusChart) {
+          statusChart.destroy();
+        }
+
+        const labels = data.map(s => s.status_pagamento);
+        const values = data.map(s => s.total);
+
+        statusChart = new Chart(ctx, {
+          type: 'pie',
+          data: {
+            labels: labels,
+            datasets: [{
+              data: values,
+              backgroundColor: ['#f5f0e6', '#a28b63', '#3a2e2e'],
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: { color: '#3a2e2e' }
+              }
+            }
+          }
+        });
+      });
+  }
+
+  carregarStatusPagamento('geral');
+
+  document.getElementById('periodo').addEventListener('change', function() {
+    const periodoSelecionado = this.value;
+    carregarStatusPagamento(periodoSelecionado);
+  });
+
+  // Consultas por Mês - Gráfico de Barras
+  let consultasChart;
+
+  function carregarConsultasPorMes(ano) {
+    fetch(`/dashboard/consultas-por-mes?dentistaId=${dentistaId}&ano=${ano}`)
+      .then(res => res.json())
+      .then(data => {
+        const ctx = document.getElementById('consultasMesChart').getContext('2d');
+        const labels = Array.from({length: 12}, (_, i) => `${i + 1}`);
+        const valores = new Array(12).fill(0);
+
+        data.forEach(item => {
+          valores[item.mes - 1] = item.total;
+        });
+
+        if (consultasChart) {
+          consultasChart.destroy();
+        }
+
+        consultasChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Consultas',
+              data: valores,
+              backgroundColor: '#a28b63',
+              borderColor: '#3a2e2e',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  stepSize: 1
+                }
+              }
+            }
+          }
+        });
+      });
+  }
+
+
+  function carregarComparativo(ano) {
+    fetch(`/dashboard/comparativo?dentistaId=${dentistaId}&ano=${ano}`)
+      .then(res => res.json())
+      .then(data => {
+        const texto = document.getElementById('comparativoTexto');
+        let variacao = data.variacao.toFixed(2);
+        let descricao = "Comparativo com o mesmo período do ano anterior: ";
+
+        if (variacao > 0) {
+          descricao += `⬆️ Aumento de ${variacao}%`;
+        } else if (variacao < 0) {
+          descricao += `⬇️ Queda de ${Math.abs(variacao)}%`;
+        } else {
+          descricao += "Sem variação";
+        }
+
+        texto.textContent = descricao;
+      });
+  }
+
+  function atualizarGraficoConsultas() {
+    const ano = document.getElementById('anoSelect').value;
+    carregarConsultasPorMes(ano);
+    carregarComparativo(ano);
+  }
+
+  document.getElementById('anoSelect').addEventListener('change', atualizarGraficoConsultas);
+
+  atualizarGraficoConsultas();
+</script>
 </body>
 </html>
