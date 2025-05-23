@@ -6,12 +6,14 @@
   <link rel="stylesheet" th:href="@{/dentista.css}">
 </head>
 <body>
+
 <header class="navbar">
   <div class="logo">Consultório Aida Cavalcanti</div>
   <nav class="nav-links">
     <a th:href="@{/dentista/consultas}" class="nav-link">Consultas</a>
     <a th:href="@{/pacientes}" class="nav-link">Pacientes</a>
     <a th:href="@{/dentista/procedimentos}" class="nav-link">Procedimentos</a>
+    <a th:href="@{/dentista/editar/{cpf}(cpf=${cpf})}" class="nav-link">Editar Perfil</a>
     <a th:href="@{/logout}" class="nav-link">Sair</a>
   </nav>
 </header>

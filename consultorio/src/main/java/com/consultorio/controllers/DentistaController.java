@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -43,6 +44,11 @@ public class DentistaController {
             model.addAttribute("erro", "Faça login antes.");
             return "redirect:/";
         }
+
+        Dentista dentistaLogado = (Dentista) session.getAttribute("usuario");
+        String cpf = dentistaLogado.getCpf();
+        model.addAttribute("cpf", cpf);
+
         return "dentista.html";
     }
 
@@ -88,7 +94,7 @@ public class DentistaController {
     public String salvarAlteracoes(HttpSession session, Dentista dentista) {
         if (verificaSessaoDentista(session)) return "redirect:/";
         dentistaDAO.atualizar(dentista);
-        return "redirect:/dentista/listar";
+        return "redirect:/dentista";
     }
 
     @PostMapping("/procedimento/cadastrar")

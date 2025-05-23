@@ -1,12 +1,23 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <link rel="stylesheet" href="dentista-form.css">
+    <link rel="stylesheet" th:href="@{/editar-dentista.css}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Dentista</title>
 </head>
 <body>
+
+<header class="navbar">
+    <div class="logo">Consultório Aida Cavalcanti</div>
+    <nav class="nav-links">
+        <a th:href="@{/dentista/consultas}" class="nav-link">Consultas</a>
+        <a th:href="@{/pacientes}" class="nav-link">Pacientes</a>
+        <a th:href="@{/dentista/procedimentos}" class="nav-link">Procedimentos</a>
+        <a th:href="@{/dentista/editar/{cpf}(cpf=${cpf})}" class="nav-link">Editar Perfil</a>
+        <a th:href="@{/logout}" class="nav-link">Sair</a>
+    </nav>
+</header>
 
 <div class="container">
     <h1>Editar Dentista</h1>
@@ -49,6 +60,7 @@
         <input type="text" id="especialidade" name="especialidade" th:value="${dentista.especialidade}" required>
 
         <button type="submit">Salvar alterações</button>
+
     </form>
 </div>
 </body>
