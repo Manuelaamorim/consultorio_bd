@@ -50,50 +50,21 @@ public class ConsultaDAO {
     }
     // Atualizar uma consulta
     public void atualizar(Consulta consulta) {
-        String sql = "UPDATE consulta SET ";
-
-        List<String> updates = new ArrayList<>();
-        List<Object> params = new ArrayList<>();
-
-        if (consulta.getData() != null) {
-            updates.add("data = ?");
-            params.add(consulta.getData());
-        }
-        if (consulta.getHorarioInicio() != null) {
-            updates.add("horario_inicio = ?");
-            params.add(consulta.getHorarioInicio());
-        }
-        if (consulta.getHorarioTermino() != null) {
-            updates.add("horario_termino = ?");
-            params.add(consulta.getHorarioTermino());
-        }
-        if (consulta.getStatusPagamento() != null && !consulta.getStatusPagamento().isEmpty()) {
-            updates.add("status_pagamento = ?");
-            params.add(consulta.getStatusPagamento());
-        }
-        if (consulta.getMetodoPagamento() != null && !consulta.getMetodoPagamento().isEmpty()) {
-            updates.add("metodo_pagamento = ?");
-            params.add(consulta.getMetodoPagamento());
-        }
-        if (consulta.getIdPaciente() != 0) {
-            updates.add("id_paciente = ?");
-            params.add(consulta.getIdPaciente());
-        }
-        if (consulta.getIdDentista() != 0) {
-            updates.add("id_dentista = ?");
-            params.add(consulta.getIdDentista());
-        }
-
-        if (updates.isEmpty()) {
-            // Nenhum campo para atualizar
-            return;
-        }
-
-        sql += String.join(", ", updates) + " WHERE id = ?";
-        params.add(consulta.getId());
-
-        jdbcTemplate.update(sql, params.toArray());
+        String sql = "UPDATE consulta SET data = ?, horario_inicio = ?, horario_termino = ?, " +
+                "status_pagamento = ?, metodo_pagamento = ?, id_paciente = ?, id_dentista = ? " +
+                "WHERE id = ?";
+        jdbcTemplate.update(sql,
+                consulta.getData(),
+                consulta.getHorarioInicio(),
+                consulta.getHorarioTermino(),
+                consulta.getStatusPagamento(),
+                consulta.getMetodoPagamento(),
+                consulta.getIdPaciente(),
+                consulta.getIdDentista(),
+                consulta.getId()
+        );
     }
+
 
 
     // Buscar uma consulta pelo ID

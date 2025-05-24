@@ -144,7 +144,8 @@ public class DentistaController {
         if (verificaSessaoDentista(session)) return "redirect:/";
 
         consultaDAO.salvar(consulta); // Certifique-se que esse método existe no DAO
-        return "redirect:/dentista/consultas-dentista"; // Ou outra tela desejada após salvar
+        return "redirect:/dentista/consultas";
+        // Ou outra tela desejada após salvar
     }
     @GetMapping("/consultas/excluir/{id}")
     public String excluirConsulta(@PathVariable int id, HttpSession session) {
@@ -155,29 +156,44 @@ public class DentistaController {
         consultaDAO.excluir(id);
         return "redirect:/dentista/consultas";
     }
-    @GetMapping("/consultas/editar/{id}")
-    public String mostrarFormularioEditar(@PathVariable int id, Model model, HttpSession session) {
-        if (verificaSessaoDentista(session)) {
-            return "redirect:/";
-        }
 
+    @GetMapping("/consulta/editar/{id}")
+    public String editarConsulta(HttpSession session, @PathVariable int id, Model model) {
+        if (verificaSessaoDentista(session)) return "redirect:/";
         Consulta consulta = consultaDAO.buscarPorId(id);
         model.addAttribute("consulta", consulta);
+        return "editar-consulta-dentista";
+    }
+
+    @PostMapping("/consulta/editar/{id}")
+    public String salvarAlteracoesConsulta(HttpSession session, @PathVariable int id, Consulta consulta) {
+        if (verificaSessaoDentista(session)) return "redirect:/";
+
+        consulta.setId(id); // garante que o id seja o da URL
+        consultaDAO.atualizar(consulta);
+        return "redirect:/dentista/consultas";
+    }
+    @GetMapping("/consultas/nova")
+    public String mostrarFormularioNovaConsulta(HttpSession session, Model model) {
+        if (verificaSessaoDentista(session)) return "redirect:/";
+
         model.addAttribute("pacientes", pacienteDAO.listarPacientes());
         model.addAttribute("dentistas", dentistaDAO.listarDentistas());
 
-        return "consulta-form"; // Usa o mesmo formulário de criação do dentista
+        model.addAttribute("consulta", new Consulta()); // opcional para bind no form
+
+        return "consulta-form"; // o nome do template que você usa para o form
+    }
+    @PostMapping("/consultas/nova")
+    public String salvarNovaConsulta(HttpSession session, @ModelAttribute Consulta consulta) {
+        if (verificaSessaoDentista(session)) return "redirect:/";
+
+        consultaDAO.salvar(consulta);
+        return "redirect:/dentista/consultas";
     }
 
-    @PostMapping("/consultas/editar")
-    public String salvarEdicaoConsulta(@ModelAttribute Consulta consulta, HttpSession session) {
-        if (verificaSessaoDentista(session)) {
-            return "redirect:/";
-        }
 
-        consultaDAO.atualizar(consulta);
-        return "redirect:/dentista/consultas-dentista";
-    }
+
 
 
 }

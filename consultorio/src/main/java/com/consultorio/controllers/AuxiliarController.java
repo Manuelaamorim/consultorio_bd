@@ -58,6 +58,7 @@ public class AuxiliarController {
         return "consultas-auxiliar";
     }
 
+
     @PostMapping("/consultas")
     public String criarConsulta(@ModelAttribute Consulta consulta, HttpSession session) {
         if (verificaSessaoAuxiliar(session)) {
@@ -92,28 +93,18 @@ public class AuxiliarController {
         pacienteDAO.salvar(paciente);
         return "redirect:/auxiliar/consultas/nova";
     }
-    // Abrir formulário de edição de consulta
-    @GetMapping("/consultas/editar/{id}")
-    public String mostrarFormularioEditar(@PathVariable int id, Model model, HttpSession session) {
-        if (verificaSessaoAuxiliar(session)) {
-            return "redirect:/";
-        }
-
+    @GetMapping("/editar/{id}")
+    public String editarConsulta(HttpSession session, @PathVariable int id, Model model) {
+        if (verificaSessaoAuxiliar(session)) return "redirect:/";
         Consulta consulta = consultaDAO.buscarPorId(id);
         model.addAttribute("consulta", consulta);
-        model.addAttribute("pacientes", pacienteDAO.listarPacientes());
-        model.addAttribute("dentistas", dentistaDAO.listarDentistas());
-
-        return "consulta-form-auxiliar"; // Usa o mesmo formulário de criação
+        return "editar-consulta-auxiliar";  // Nome do seu arquivo HTML
     }
 
-    // Salvar edição da consulta
-    @PostMapping("/consultas/editar")
-    public String salvarEdicaoConsulta(@ModelAttribute Consulta consulta, HttpSession session) {
-        if (verificaSessaoAuxiliar(session)) {
-            return "redirect:/";
-        }
-
+    // Salvar as alterações
+    @PostMapping("/editar/{id}")
+    public String salvarAlteracoes(HttpSession session, @ModelAttribute Consulta consulta) {
+        if (verificaSessaoAuxiliar(session)) return "redirect:/";
         consultaDAO.atualizar(consulta);
         return "redirect:/auxiliar/consultas";
     }
@@ -128,6 +119,8 @@ public class AuxiliarController {
         consultaDAO.excluir(id);
         return "redirect:/auxiliar/consultas";
     }
+
+
 
 
 }

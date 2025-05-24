@@ -12,6 +12,7 @@
     <div class="logo">Consultório Aida Cavalcanti</div>
     <nav class="nav-links">
         <a th:href="@{/auxiliar/consultas}" class="nav-link">Consultas</a>
+
         <a th:href="@{/pacientes}" class="nav-link">Pacientes</a>
         <a th:href="@{/logout}" class="nav-link">Sair</a>
     </nav>
@@ -40,7 +41,8 @@
             <td th:text="${consulta.statusPagamento}"></td>
             <td th:text="${consulta.metodoPagamento}"></td>
             <td>
-                <a th:href="@{'/auxiliar/consultas/editar/' + ${consulta.id}}" class="btn-acao editar">Editar</a>
+                <a th:href="@{'/auxiliar/editar/' + ${consulta.id}}" class="btn-acao editar">Editar</a>
+
                 <a th:href="@{'/auxiliar/consultas/excluir/' + ${consulta.id}}"
                    class="btn-acao excluir"
                    onclick="return confirm('Tem certeza que deseja excluir esta consulta?');">Excluir</a>
