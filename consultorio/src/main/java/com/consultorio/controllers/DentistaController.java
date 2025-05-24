@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -30,7 +29,7 @@ public class DentistaController {
     private ConsultaDAO consultaDAO;
 
     @Autowired
-    private PacienteDAO pacienteDAO; // 🔹 Injetando o PacienteDAO
+    private PacienteDAO pacienteDAO;
 
     // Método para verificar se o usuário está logado como dentista
     private boolean verificaSessaoDentista(HttpSession session) {
@@ -53,8 +52,13 @@ public class DentistaController {
     }
 
     @GetMapping("/form")
-    public String mostrarFormulario(HttpSession session) {
+    public String mostrarFormulario(HttpSession session, Model model) {
         if (verificaSessaoDentista(session)) return "redirect:/";
+
+        Dentista dentistaLogado = (Dentista) session.getAttribute("usuario");
+        String cpf = dentistaLogado.getCpf();
+        model.addAttribute("cpf", cpf);
+
         return "dentista-form.html";
     }
 
@@ -63,6 +67,11 @@ public class DentistaController {
         if (verificaSessaoDentista(session)) return "redirect:/";
         List<Dentista> dentistas = dentistaDAO.listarDentistas();
         model.addAttribute("dentistas", dentistas);
+
+        Dentista dentistaLogado = (Dentista) session.getAttribute("usuario");
+        String cpf = dentistaLogado.getCpf();
+        model.addAttribute("cpf", cpf);
+
         return "listar-dentistas.html";
     }
 
@@ -87,6 +96,7 @@ public class DentistaController {
         if (verificaSessaoDentista(session)) return "redirect:/";
         Dentista dentista = dentistaDAO.buscarPorCpf(cpf);
         model.addAttribute("dentista", dentista);
+        model.addAttribute("cpf", cpf);
         return "editar-dentista";
     }
 
@@ -107,12 +117,24 @@ public class DentistaController {
     @GetMapping("/procedimentos")
     public String listarProcedimentos(Model model, HttpSession session) {
         if (verificaSessaoDentista(session)) return "redirect:/";
+
         model.addAttribute("procedimentos", procedimentoDAO.listarTodos());
+
+        Dentista dentistaLogado = (Dentista) session.getAttribute("usuario");
+        String cpf = dentistaLogado.getCpf();
+        model.addAttribute("cpf", cpf);
+
         return "procedimentos";
     }
 
     @GetMapping("/consultas-dentista")
-    public String consultasDentista() {
+    public String consultasDentista(HttpSession session, Model model) {
+        if (verificaSessaoDentista(session)) return "redirect:/";
+
+        Dentista dentistaLogado = (Dentista) session.getAttribute("usuario");
+        String cpf = dentistaLogado.getCpf();
+        model.addAttribute("cpf", cpf);
+
         return "consultas-dentista";
     }
 
@@ -125,6 +147,7 @@ public class DentistaController {
 
         List<Consulta> consultas = consultaDAO.listarPorCpfDentista(cpf);
         model.addAttribute("consultas", consultas);
+        model.addAttribute("cpf", cpf);
 
         return "consultas-dentista";
     }
@@ -136,6 +159,10 @@ public class DentistaController {
         model.addAttribute("pacientes", pacienteDAO.listarPacientes());
         model.addAttribute("dentistas", dentistaDAO.listarDentistas());
 
+        Dentista dentistaLogado = (Dentista) session.getAttribute("usuario");
+        String cpf = dentistaLogado.getCpf();
+        model.addAttribute("cpf", cpf);
+
         return "consulta-form";
     }
 
@@ -143,16 +170,15 @@ public class DentistaController {
     public String salvarConsulta(HttpSession session, @ModelAttribute Consulta consulta) {
         if (verificaSessaoDentista(session)) return "redirect:/";
 
-        consultaDAO.salvar(consulta); // Certifique-se que esse método existe no DAO
+        consultaDAO.salvar(consulta);
         return "redirect:/dentista/consultas";
-        // Ou outra tela desejada após salvar
     }
+
     @GetMapping("/consultas/excluir/{id}")
     public String excluirConsulta(@PathVariable int id, HttpSession session) {
         if (verificaSessaoDentista(session)) {
             return "redirect:/";
         }
-
         consultaDAO.excluir(id);
         return "redirect:/dentista/consultas";
     }
@@ -160,8 +186,14 @@ public class DentistaController {
     @GetMapping("/consulta/editar/{id}")
     public String editarConsulta(HttpSession session, @PathVariable int id, Model model) {
         if (verificaSessaoDentista(session)) return "redirect:/";
+
         Consulta consulta = consultaDAO.buscarPorId(id);
         model.addAttribute("consulta", consulta);
+
+        Dentista dentistaLogado = (Dentista) session.getAttribute("usuario");
+        String cpf = dentistaLogado.getCpf();
+        model.addAttribute("cpf", cpf);
+
         return "editar-consulta-dentista";
     }
 
@@ -169,21 +201,26 @@ public class DentistaController {
     public String salvarAlteracoesConsulta(HttpSession session, @PathVariable int id, Consulta consulta) {
         if (verificaSessaoDentista(session)) return "redirect:/";
 
-        consulta.setId(id); // garante que o id seja o da URL
+        consulta.setId(id);
         consultaDAO.atualizar(consulta);
         return "redirect:/dentista/consultas";
     }
+
     @GetMapping("/consultas/nova")
     public String mostrarFormularioNovaConsulta(HttpSession session, Model model) {
         if (verificaSessaoDentista(session)) return "redirect:/";
 
         model.addAttribute("pacientes", pacienteDAO.listarPacientes());
         model.addAttribute("dentistas", dentistaDAO.listarDentistas());
+        model.addAttribute("consulta", new Consulta());
 
-        model.addAttribute("consulta", new Consulta()); // opcional para bind no form
+        Dentista dentistaLogado = (Dentista) session.getAttribute("usuario");
+        String cpf = dentistaLogado.getCpf();
+        model.addAttribute("cpf", cpf);
 
-        return "consulta-form"; // o nome do template que você usa para o form
+        return "consulta-form";
     }
+
     @PostMapping("/consultas/nova")
     public String salvarNovaConsulta(HttpSession session, @ModelAttribute Consulta consulta) {
         if (verificaSessaoDentista(session)) return "redirect:/";
@@ -191,9 +228,4 @@ public class DentistaController {
         consultaDAO.salvar(consulta);
         return "redirect:/dentista/consultas";
     }
-
-
-
-
-
 }

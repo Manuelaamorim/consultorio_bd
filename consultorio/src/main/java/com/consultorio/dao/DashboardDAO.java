@@ -22,6 +22,18 @@ public class DashboardDAO {
         return jdbcTemplate.queryForList(sql, dentistaId);
     }
 
+    // Consultas detalhadas no mês atual, ordenadas cronologicamente
+    public List<Map<String, Object>> getConsultasMesDetalhadas(int dentistaId) {
+        String sql = "SELECT p.nome, c.data, c.horario_inicio, c.horario_termino " +
+                "FROM consulta c " +
+                "JOIN paciente p ON c.id_paciente = p.id " +
+                "WHERE c.id_dentista = ? " +
+                "AND MONTH(c.data) = MONTH(CURDATE()) " +
+                "AND YEAR(c.data) = YEAR(CURDATE()) " +
+                "ORDER BY c.data ASC, c.horario_inicio ASC";
+        return jdbcTemplate.queryForList(sql, dentistaId);
+    }
+
     // consultas no mes, comparativo e percentual de crescimento em relacao ao ano anterior
     public List<Map<String, Object>> getConsultasPorMes(int dentistaId, int ano) {
         String sql = "SELECT MONTH(data) AS mes, COUNT(*) AS total " +

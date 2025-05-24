@@ -29,7 +29,7 @@
 
     <div class="card">
       <h2>Consultas no Mês</h2>
-      <p id="consultasMes">0</p>
+      <ul id="consultasMes" class="lista-consultas"></ul>
     </div>
 
     <div class="card">
@@ -67,23 +67,52 @@
   const dentistaId = 1; // Ajuste conforme o dentista logado
 
   // Consultas Hoje
-  fetch(`/dashboard/consultas-hoje?dentistaId=${dentistaId}`)
-    .then(res => res.json())
-    .then(data => {
-      const ul = document.getElementById('consultasHoje');
+fetch(`/dashboard/consultas-hoje?dentistaId=${dentistaId}`)
+  .then(res => res.json())
+  .then(data => {
+    const ul = document.getElementById('consultasHoje');
+    ul.innerHTML = ''; // Limpa a lista antes
+    if (data.length === 0) {
+      const li = document.createElement('li');
+      li.textContent = "Nenhuma consulta agendada para hoje.";
+      ul.appendChild(li);
+    } else {
       data.forEach(c => {
         const li = document.createElement('li');
-        li.textContent = `${c.nome} - ${c.horario_inicio} até ${c.horario_termino}`;
+        li.innerHTML = `<strong>${c.nome}</strong> <br> ${c.horario_inicio} - ${c.horario_termino}`;
         ul.appendChild(li);
       });
-    });
+    }
+  });
+
 
   // Consultas no Mês
-  fetch(`/dashboard/consultas-mes?dentistaId=${dentistaId}`)
-    .then(res => res.json())
-    .then(data => {
-      document.getElementById('consultasMes').textContent = data;
-    });
+fetch(`/dashboard/consultas-mes?dentistaId=${dentistaId}`)
+  .then(res => res.json())
+  .then(data => {
+    const ul = document.getElementById('consultasMes');
+    ul.innerHTML = '';
+
+    if (data.length === 0) {
+      const li = document.createElement('li');
+      li.textContent = "Nenhuma consulta agendada para este mês.";
+      ul.appendChild(li);
+    } else {
+      // Ordena por data e horário (precaução, caso backend não ordene)
+      data.sort((a, b) => {
+        const dataA = new Date(`${a.data}T${a.horario_inicio}`);
+        const dataB = new Date(`${b.data}T${b.horario_inicio}`);
+        return dataA - dataB;
+      });
+
+      data.forEach(c => {
+        const li = document.createElement('li');
+        li.innerHTML = `<strong>${c.nome}</strong> <br> ${c.data} ${c.horario_inicio} - ${c.horario_termino}`;
+        ul.appendChild(li);
+      });
+    }
+  });
+
 
   // Status de Pagamento - Gráfico de Pizza
   let statusChart;

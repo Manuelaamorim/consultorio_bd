@@ -3,16 +3,19 @@ package com.consultorio.controllers;
 import com.consultorio.dao.ConsultaDAO;
 import com.consultorio.dao.PacienteDAO;
 import com.consultorio.models.Consulta;
+import com.consultorio.models.Dentista;
 import com.consultorio.models.Paciente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpSession;
+
 import java.util.List;
 
 @Controller
 public class PacienteController {
+
     @Autowired
     private PacienteDAO pacienteDAO;
 
@@ -30,12 +33,13 @@ public class PacienteController {
 
         // Adiciona lista de pacientes para o select
         List<Paciente> pacientes = pacienteDAO.listarIdENome();
-
         model.addAttribute("paciente", new Paciente());
-
-        model.addAttribute("pacientes", pacienteDAO.listarIdENome());
+        model.addAttribute("pacientes", pacientes);
 
         if ("dentista".equals(tipo)) {
+            Dentista dentistaLogado = (Dentista) usuario;
+            String cpf = dentistaLogado.getCpf();
+            model.addAttribute("cpf", cpf);
             return "paciente-form-dentista";
         } else if ("auxiliar".equals(tipo)) {
             return "paciente-form-auxiliar";
@@ -57,9 +61,12 @@ public class PacienteController {
         model.addAttribute("pacientes", pacientes);
 
         if ("dentista".equals(tipo)) {
-            return "listar-pacientes-dentista"; // HTML exclusivo do dentista
+            Dentista dentistaLogado = (Dentista) usuario;
+            String cpf = dentistaLogado.getCpf();
+            model.addAttribute("cpf", cpf);
+            return "listar-pacientes-dentista";
         } else if ("auxiliar".equals(tipo)) {
-            return "listar-pacientes-auxiliar"; // HTML exclusivo do auxiliar
+            return "listar-pacientes-auxiliar";
         } else {
             return "redirect:/";
         }
@@ -68,7 +75,7 @@ public class PacienteController {
     @PostMapping("/pacientes")
     public String adicionarPaciente(Paciente paciente) {
         pacienteDAO.salvar(paciente);
-        return "redirect:/pacientes"; // ou renderize um HTML de sucesso
+        return "redirect:/pacientes";
     }
 
     @DeleteMapping("/pacientes/{cpf}")
@@ -91,14 +98,16 @@ public class PacienteController {
         model.addAttribute("paciente", paciente);
 
         if ("dentista".equals(tipo)) {
-            return "editar-paciente-dentista"; // HTML exclusivo do dentista
+            Dentista dentistaLogado = (Dentista) usuario;
+            String dentistaCpf = dentistaLogado.getCpf();
+            model.addAttribute("cpf", dentistaCpf);
+            return "editar-paciente-dentista";
         } else if ("auxiliar".equals(tipo)) {
-            return "editar-paciente-auxiliar"; // HTML exclusivo do auxiliar
+            return "editar-paciente-auxiliar";
         } else {
             return "redirect:/";
         }
     }
-
 
     @PostMapping("/paciente/editar")
     public String salvarAlteracoes(Paciente paciente) {
@@ -107,14 +116,26 @@ public class PacienteController {
     }
 
     @GetMapping("/paciente/historico/{id}")
-    public String verHistoricoPaciente(@PathVariable("id") int pacienteId, Model model) {
+    public String verHistoricoPaciente(@PathVariable("id") int pacienteId, Model model, HttpSession session) {
+        Object usuario = session.getAttribute("usuario");
+        String tipo = (String) session.getAttribute("tipo");
+
+        if (usuario == null || tipo == null) {
+            return "redirect:/";
+        }
+
         List<Consulta> consultas = consultaDAO.listarPorPacienteId(pacienteId);
         model.addAttribute("consultas", consultas);
 
-        // Se quiser mostrar dados do paciente na página:
         Paciente paciente = pacienteDAO.buscarPorId(pacienteId);
         model.addAttribute("paciente", paciente);
 
-        return "historico-paciente";  // JSP ou Thymeleaf, a view do histórico
+        if ("dentista".equals(tipo)) {
+            Dentista dentistaLogado = (Dentista) usuario;
+            String cpf = dentistaLogado.getCpf();
+            model.addAttribute("cpf", cpf);
+        }
+
+        return "historico-paciente";
     }
 }

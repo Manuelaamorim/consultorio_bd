@@ -3,16 +3,16 @@ package com.consultorio.models;
 import java.math.BigDecimal;
 
 public class Procedimento {
-    private int codigo;
+    private String codigo;
     private String nome;
     private String pos_operatorio;
     private BigDecimal valor;
 
-    public int getCodigo() {
+    public String getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(int codigo) {
+    public void setCodigo(String codigo) {
         this.codigo = codigo;
     }
 

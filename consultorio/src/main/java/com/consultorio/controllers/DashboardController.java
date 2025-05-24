@@ -22,6 +22,11 @@ public class DashboardController {
         return dashboardDAO.getConsultasHoje(dentistaId);
     }
 
+    @GetMapping("/consultas-mes")
+    public List<Map<String, Object>> consultasMes(@RequestParam int dentistaId) {
+        return dashboardDAO.getConsultasMesDetalhadas(dentistaId);
+    }
+
     // 2. Consultas no mês
     @GetMapping("/consultas-por-mes")
     public List<Map<String, Object>> consultasPorMes(
