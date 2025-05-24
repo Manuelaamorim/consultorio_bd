@@ -46,6 +46,16 @@
         </div>
 
         <div class="campo">
+            <label>Procedimentos:</label>
+            <th:block th:each="proc : ${procedimentos}">
+                <label>
+                    <input type="checkbox" name="procedimentos" th:value="${proc.codigo}">
+                    <span th:text="${proc.nome}"></span>
+                </label><br>
+            </th:block>
+        </div>
+
+        <div class="campo">
             <label for="paciente">Paciente:</label>
             <select id="paciente" name="idPaciente" required>
                 <option value="">Selecione</option>

@@ -75,3 +75,11 @@ CREATE TABLE consulta (
     FOREIGN KEY (id_dentista) REFERENCES dentista(id)
 );
 
+-- Criar tabela relacional para associar consultas a procedimentos
+CREATE TABLE consulta_procedimento (
+    consulta_id INT NOT NULL,
+    procedimento_codigo VARCHAR(20) NOT NULL,
+    PRIMARY KEY (consulta_id, procedimento_codigo),
+    FOREIGN KEY (consulta_id) REFERENCES consulta(id) ON DELETE CASCADE,
+    FOREIGN KEY (procedimento_codigo) REFERENCES procedimento(codigo) ON DELETE CASCADE
+);

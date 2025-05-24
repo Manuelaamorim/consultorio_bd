@@ -19,15 +19,19 @@
 <main class="conteudo">
     <h1>Agendar Consulta</h1>
     <form method="post" action="/auxiliar/consultas" class="formulario">
-        <label for="data">Data:</label>
-        <input type="text" id="data" name="data" placeholder="dd/mm/aaaa">
+        <div class="campo">
+            <label for="data">Data:</label>
+            <input type="date" id="data" name="data" required>
+        </div>
+        <div class="campo">
+            <label for="inicio">Horário Início:</label>
+            <input type="time" id="inicio" name="horarioInicio" required>
+        </div>
 
-        <label for="inicio">Horário Início:</label>
-        <input type="text" id="inicio" name="horarioInicio" placeholder="hh:mm">
-
-        <label for="inicio">Horário Término:</label>
-        <input type="text" id="termino" name="horarioTermino" placeholder="hh:mm">
-
+        <div class="campo">
+            <label for="termino">Horário Término:</label>
+            <input type="time" id="termino" name="horarioTermino" required>
+        </div>
         <div class="campo">
             <label for="status">Status Pagamento:</label>
             <input type="text" id="status" name="statusPagamento">
@@ -36,6 +40,16 @@
         <div class="campo">
             <label for="metodo">Método Pagamento:</label>
             <input type="text" id="metodo" name="metodoPagamento">
+        </div>
+
+        <div class="campo">
+            <label>Procedimentos:</label>
+            <th:block th:each="proc : ${procedimentos}">
+                <label>
+                    <input type="checkbox" name="procedimentos" th:value="${proc.codigo}">
+                    <span th:text="${proc.nome}"></span>
+                </label><br>
+            </th:block>
         </div>
 
         <div class="campo">

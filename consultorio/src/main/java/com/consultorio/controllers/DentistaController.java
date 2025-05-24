@@ -31,7 +31,6 @@ public class DentistaController {
     @Autowired
     private PacienteDAO pacienteDAO;
 
-    // Método para verificar se o usuário está logado como dentista
     private boolean verificaSessaoDentista(HttpSession session) {
         return session.getAttribute("usuario") == null ||
                 !"dentista".equals(session.getAttribute("tipo"));
@@ -43,35 +42,25 @@ public class DentistaController {
             model.addAttribute("erro", "Faça login antes.");
             return "redirect:/";
         }
-
         Dentista dentistaLogado = (Dentista) session.getAttribute("usuario");
-        String cpf = dentistaLogado.getCpf();
-        model.addAttribute("cpf", cpf);
-
+        model.addAttribute("cpf", dentistaLogado.getCpf());
         return "dentista.html";
     }
 
     @GetMapping("/form")
     public String mostrarFormulario(HttpSession session, Model model) {
         if (verificaSessaoDentista(session)) return "redirect:/";
-
         Dentista dentistaLogado = (Dentista) session.getAttribute("usuario");
-        String cpf = dentistaLogado.getCpf();
-        model.addAttribute("cpf", cpf);
-
+        model.addAttribute("cpf", dentistaLogado.getCpf());
         return "dentista-form.html";
     }
 
     @GetMapping("/listar")
     public String listarDentistas(HttpSession session, Model model) {
         if (verificaSessaoDentista(session)) return "redirect:/";
-        List<Dentista> dentistas = dentistaDAO.listarDentistas();
-        model.addAttribute("dentistas", dentistas);
-
+        model.addAttribute("dentistas", dentistaDAO.listarDentistas());
         Dentista dentistaLogado = (Dentista) session.getAttribute("usuario");
-        String cpf = dentistaLogado.getCpf();
-        model.addAttribute("cpf", cpf);
-
+        model.addAttribute("cpf", dentistaLogado.getCpf());
         return "listar-dentistas.html";
     }
 
@@ -117,68 +106,46 @@ public class DentistaController {
     @GetMapping("/procedimentos")
     public String listarProcedimentos(Model model, HttpSession session) {
         if (verificaSessaoDentista(session)) return "redirect:/";
-
         model.addAttribute("procedimentos", procedimentoDAO.listarTodos());
-
         Dentista dentistaLogado = (Dentista) session.getAttribute("usuario");
-        String cpf = dentistaLogado.getCpf();
-        model.addAttribute("cpf", cpf);
-
+        model.addAttribute("cpf", dentistaLogado.getCpf());
         return "procedimentos";
-    }
-
-    @GetMapping("/consultas-dentista")
-    public String consultasDentista(HttpSession session, Model model) {
-        if (verificaSessaoDentista(session)) return "redirect:/";
-
-        Dentista dentistaLogado = (Dentista) session.getAttribute("usuario");
-        String cpf = dentistaLogado.getCpf();
-        model.addAttribute("cpf", cpf);
-
-        return "consultas-dentista";
     }
 
     @GetMapping("/consultas")
     public String listarConsultasDoDentista(HttpSession session, Model model) {
         if (verificaSessaoDentista(session)) return "redirect:/";
-
         Dentista dentistaLogado = (Dentista) session.getAttribute("usuario");
-        String cpf = dentistaLogado.getCpf();
-
-        List<Consulta> consultas = consultaDAO.listarPorCpfDentista(cpf);
-        model.addAttribute("consultas", consultas);
-        model.addAttribute("cpf", cpf);
-
+        model.addAttribute("cpf", dentistaLogado.getCpf());
+        model.addAttribute("consultas", consultaDAO.listarPorCpfDentista(dentistaLogado.getCpf()));
         return "consultas-dentista";
     }
 
     @GetMapping("/consulta-form")
     public String mostrarFormularioConsulta(HttpSession session, Model model) {
         if (verificaSessaoDentista(session)) return "redirect:/";
-
         model.addAttribute("pacientes", pacienteDAO.listarPacientes());
         model.addAttribute("dentistas", dentistaDAO.listarDentistas());
-
+        model.addAttribute("procedimentos", procedimentoDAO.listarTodos());
+        model.addAttribute("consulta", new Consulta());
         Dentista dentistaLogado = (Dentista) session.getAttribute("usuario");
-        String cpf = dentistaLogado.getCpf();
-        model.addAttribute("cpf", cpf);
-
+        model.addAttribute("cpf", dentistaLogado.getCpf());
         return "consulta-form";
     }
 
     @PostMapping("/consultas")
-    public String salvarConsulta(HttpSession session, @ModelAttribute Consulta consulta) {
+    public String salvarConsulta(HttpSession session,
+                                 @ModelAttribute Consulta consulta,
+                                 @RequestParam("procedimentos") List<String> procedimentos) {
         if (verificaSessaoDentista(session)) return "redirect:/";
-
+        consulta.setProcedimentos(procedimentos);
         consultaDAO.salvar(consulta);
         return "redirect:/dentista/consultas";
     }
 
     @GetMapping("/consultas/excluir/{id}")
     public String excluirConsulta(@PathVariable int id, HttpSession session) {
-        if (verificaSessaoDentista(session)) {
-            return "redirect:/";
-        }
+        if (verificaSessaoDentista(session)) return "redirect:/";
         consultaDAO.excluir(id);
         return "redirect:/dentista/consultas";
     }
@@ -186,22 +153,24 @@ public class DentistaController {
     @GetMapping("/consulta/editar/{id}")
     public String editarConsulta(HttpSession session, @PathVariable int id, Model model) {
         if (verificaSessaoDentista(session)) return "redirect:/";
-
         Consulta consulta = consultaDAO.buscarPorId(id);
         model.addAttribute("consulta", consulta);
-
+        model.addAttribute("pacientes", pacienteDAO.listarPacientes());
+        model.addAttribute("dentistas", dentistaDAO.listarDentistas());
+        model.addAttribute("procedimentos", procedimentoDAO.listarTodos());
         Dentista dentistaLogado = (Dentista) session.getAttribute("usuario");
-        String cpf = dentistaLogado.getCpf();
-        model.addAttribute("cpf", cpf);
-
+        model.addAttribute("cpf", dentistaLogado.getCpf());
         return "editar-consulta-dentista";
     }
 
     @PostMapping("/consulta/editar/{id}")
-    public String salvarAlteracoesConsulta(HttpSession session, @PathVariable int id, Consulta consulta) {
+    public String salvarAlteracoesConsulta(HttpSession session,
+                                           @PathVariable int id,
+                                           @ModelAttribute Consulta consulta,
+                                           @RequestParam("procedimentos") List<String> procedimentos) {
         if (verificaSessaoDentista(session)) return "redirect:/";
-
         consulta.setId(id);
+        consulta.setProcedimentos(procedimentos);
         consultaDAO.atualizar(consulta);
         return "redirect:/dentista/consultas";
     }
@@ -209,22 +178,21 @@ public class DentistaController {
     @GetMapping("/consultas/nova")
     public String mostrarFormularioNovaConsulta(HttpSession session, Model model) {
         if (verificaSessaoDentista(session)) return "redirect:/";
-
         model.addAttribute("pacientes", pacienteDAO.listarPacientes());
         model.addAttribute("dentistas", dentistaDAO.listarDentistas());
+        model.addAttribute("procedimentos", procedimentoDAO.listarTodos());
         model.addAttribute("consulta", new Consulta());
-
         Dentista dentistaLogado = (Dentista) session.getAttribute("usuario");
-        String cpf = dentistaLogado.getCpf();
-        model.addAttribute("cpf", cpf);
-
+        model.addAttribute("cpf", dentistaLogado.getCpf());
         return "consulta-form";
     }
 
     @PostMapping("/consultas/nova")
-    public String salvarNovaConsulta(HttpSession session, @ModelAttribute Consulta consulta) {
+    public String salvarNovaConsulta(HttpSession session,
+                                     @ModelAttribute Consulta consulta,
+                                     @RequestParam("procedimentos") List<String> procedimentos) {
         if (verificaSessaoDentista(session)) return "redirect:/";
-
+        consulta.setProcedimentos(procedimentos);
         consultaDAO.salvar(consulta);
         return "redirect:/dentista/consultas";
     }

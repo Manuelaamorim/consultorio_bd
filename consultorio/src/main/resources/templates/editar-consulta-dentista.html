@@ -51,6 +51,17 @@
         </div>
 
         <div class="campo">
+            <label>Procedimentos:</label>
+            <th:block th:each="procedimento : ${procedimentos}">
+                <label>
+                    <input type="checkbox" name="procedimentos" th:value="${procedimento.codigo}"
+                           th:checked="${#lists.contains(consulta.procedimentos, procedimento.codigo)}">
+                    <span th:text="${procedimento.nome}"></span>
+                </label><br>
+            </th:block>
+        </div>
+
+        <div class="campo">
             <label for="paciente">Paciente (ID):</label>
             <input type="number" id="paciente" name="idPaciente" min="1" th:value="${consulta.idPaciente}">
         </div>
