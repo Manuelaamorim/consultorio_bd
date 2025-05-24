@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @Controller
 @RequestMapping("/auxiliar")
 public class AuxiliarController {
@@ -91,4 +92,42 @@ public class AuxiliarController {
         pacienteDAO.salvar(paciente);
         return "redirect:/auxiliar/consultas/nova";
     }
+    // Abrir formulário de edição de consulta
+    @GetMapping("/consultas/editar/{id}")
+    public String mostrarFormularioEditar(@PathVariable int id, Model model, HttpSession session) {
+        if (verificaSessaoAuxiliar(session)) {
+            return "redirect:/";
+        }
+
+        Consulta consulta = consultaDAO.buscarPorId(id);
+        model.addAttribute("consulta", consulta);
+        model.addAttribute("pacientes", pacienteDAO.listarPacientes());
+        model.addAttribute("dentistas", dentistaDAO.listarDentistas());
+
+        return "consulta-form-auxiliar"; // Usa o mesmo formulário de criação
+    }
+
+    // Salvar edição da consulta
+    @PostMapping("/consultas/editar")
+    public String salvarEdicaoConsulta(@ModelAttribute Consulta consulta, HttpSession session) {
+        if (verificaSessaoAuxiliar(session)) {
+            return "redirect:/";
+        }
+
+        consultaDAO.atualizar(consulta);
+        return "redirect:/auxiliar/consultas";
+    }
+
+    // Excluir consulta
+    @GetMapping("/consultas/excluir/{id}")
+    public String excluirConsulta(@PathVariable int id, HttpSession session) {
+        if (verificaSessaoAuxiliar(session)) {
+            return "redirect:/";
+        }
+
+        consultaDAO.excluir(id);
+        return "redirect:/auxiliar/consultas";
+    }
+
+
 }

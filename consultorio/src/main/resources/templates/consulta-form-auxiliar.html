@@ -19,34 +19,28 @@
 <main class="conteudo">
     <h1>Agendar Consulta</h1>
     <form method="post" action="/auxiliar/consultas" class="formulario">
-        <div class="campo">
-            <label for="data">Data:</label>
-            <input type="date" id="data" name="data" required>
-        </div>
+        <label for="data">Data:</label>
+        <input type="text" id="data" name="data" placeholder="dd/mm/aaaa">
 
-        <div class="campo">
-            <label for="inicio">Horário Início:</label>
-            <input type="time" id="inicio" name="horarioInicio" required>
-        </div>
+        <label for="inicio">Horário Início:</label>
+        <input type="text" id="inicio" name="horarioInicio" placeholder="hh:mm">
 
-        <div class="campo">
-            <label for="termino">Horário Término:</label>
-            <input type="time" id="termino" name="horarioTermino" required>
-        </div>
+        <label for="inicio">Horário Término:</label>
+        <input type="text" id="termino" name="horarioTermino" placeholder="hh:mm">
 
         <div class="campo">
             <label for="status">Status Pagamento:</label>
-            <input type="text" id="status" name="statusPagamento" required>
+            <input type="text" id="status" name="statusPagamento">
         </div>
 
         <div class="campo">
             <label for="metodo">Método Pagamento:</label>
-            <input type="text" id="metodo" name="metodoPagamento" required>
+            <input type="text" id="metodo" name="metodoPagamento">
         </div>
 
         <div class="campo">
             <label for="paciente">Paciente:</label>
-            <select id="paciente" name="idPaciente" required>
+            <select id="paciente" name="idPaciente">
                 <option value="">Selecione</option>
                 <th:block th:each="paciente : ${pacientes}">
                     <option th:value="${paciente.id}" th:text="${paciente.nome}"></option>
@@ -56,7 +50,7 @@
 
         <div class="campo">
             <label for="dentista">Dentista:</label>
-            <select id="dentista" name="idDentista" required>
+            <select id="dentista" name="idDentista">
                 <option value="">Selecione</option>
                 <th:block th:each="dentista : ${dentistas}">
                     <option th:value="${dentista.id}" th:text="${dentista.nome}"></option>

@@ -50,7 +50,7 @@ td {
 }
 
 .btn:hover {
-  background-color: #8c7856;
+  background-color:#a18d7b;
 }
 
 
@@ -58,3 +58,48 @@ td {
   text-align: center;
   margin-top: 20px;
 }
+.btn-acao {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 2px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.btn-acao.editar {
+    background-color: #a28b63;
+    color: white;
+}
+
+.btn-acao.editar:hover {
+    background-color: #a18d7b;
+}
+
+.btn-acao.excluir {
+    background-color: #a28b63;
+    color: white;
+}
+
+.btn-acao.excluir:hover {
+    background-color: #a18d7b;
+}
+
+/* Mantendo estilo dos botões gerais */
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #a28b63;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #a18d7b;
+}
+

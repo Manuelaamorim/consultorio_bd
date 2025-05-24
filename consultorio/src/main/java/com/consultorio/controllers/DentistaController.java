@@ -146,5 +146,38 @@ public class DentistaController {
         consultaDAO.salvar(consulta); // Certifique-se que esse método existe no DAO
         return "redirect:/dentista/consultas-dentista"; // Ou outra tela desejada após salvar
     }
+    @GetMapping("/consultas/excluir/{id}")
+    public String excluirConsulta(@PathVariable int id, HttpSession session) {
+        if (verificaSessaoDentista(session)) {
+            return "redirect:/";
+        }
+
+        consultaDAO.excluir(id);
+        return "redirect:/dentista/consultas";
+    }
+    @GetMapping("/consultas/editar/{id}")
+    public String mostrarFormularioEditar(@PathVariable int id, Model model, HttpSession session) {
+        if (verificaSessaoDentista(session)) {
+            return "redirect:/";
+        }
+
+        Consulta consulta = consultaDAO.buscarPorId(id);
+        model.addAttribute("consulta", consulta);
+        model.addAttribute("pacientes", pacienteDAO.listarPacientes());
+        model.addAttribute("dentistas", dentistaDAO.listarDentistas());
+
+        return "consulta-form"; // Usa o mesmo formulário de criação do dentista
+    }
+
+    @PostMapping("/consultas/editar")
+    public String salvarEdicaoConsulta(@ModelAttribute Consulta consulta, HttpSession session) {
+        if (verificaSessaoDentista(session)) {
+            return "redirect:/";
+        }
+
+        consultaDAO.atualizar(consulta);
+        return "redirect:/dentista/consultas-dentista";
+    }
+
 
 }

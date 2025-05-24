@@ -10,8 +10,8 @@ public class Consulta {
     private LocalTime horarioTermino;
     private String statusPagamento;
     private String metodoPagamento;
-    private int idPaciente;
-    private int idDentista;
+    private Integer idPaciente;
+    private Integer idDentista;
 
     public Consulta() {}
 

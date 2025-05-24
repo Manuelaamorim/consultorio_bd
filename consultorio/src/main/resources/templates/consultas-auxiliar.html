@@ -28,6 +28,7 @@
             <th>Término</th>
             <th>Status</th>
             <th>Pagamento</th>
+            <th>Ações</th>
         </tr>
         </thead>
         <tbody>
@@ -38,6 +39,12 @@
             <td th:text="${consulta.horarioTermino}"></td>
             <td th:text="${consulta.statusPagamento}"></td>
             <td th:text="${consulta.metodoPagamento}"></td>
+            <td>
+                <a th:href="@{'/auxiliar/consultas/editar/' + ${consulta.id}}" class="btn-acao editar">Editar</a>
+                <a th:href="@{'/auxiliar/consultas/excluir/' + ${consulta.id}}"
+                   class="btn-acao excluir"
+                   onclick="return confirm('Tem certeza que deseja excluir esta consulta?');">Excluir</a>
+            </td>
         </tr>
         </tbody>
     </table>

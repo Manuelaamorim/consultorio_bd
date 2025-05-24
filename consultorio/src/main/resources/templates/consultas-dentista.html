@@ -13,7 +13,6 @@
     <nav class="nav-links">
         <a th:href="@{/dentista/consultas}" class="nav-link">Consultas</a>
         <a th:href="@{/pacientes}" class="nav-link">Pacientes</a>
-        <a th:href="@{/dentista/procedimentos}" class="nav-link">Procedimentos</a>
         <a th:href="@{/logout}" class="nav-link">Sair</a>
     </nav>
 </header>
@@ -29,6 +28,7 @@
             <th>Término</th>
             <th>Status</th>
             <th>Pagamento</th>
+            <th>Ações</th>
         </tr>
         </thead>
         <tbody>
@@ -39,13 +39,18 @@
             <td th:text="${consulta.horarioTermino}"></td>
             <td th:text="${consulta.statusPagamento}"></td>
             <td th:text="${consulta.metodoPagamento}"></td>
-
+            <td>
+                <a th:href="@{'/dentista/consultas/editar/' + ${consulta.id}}" class="btn-acao editar">Editar</a>
+                <a th:href="@{'/dentista/consultas/excluir/' + ${consulta.id}}"
+                   class="btn-acao excluir"
+                   onclick="return confirm('Tem certeza que deseja excluir esta consulta?');">Excluir</a>
+            </td>
         </tr>
         </tbody>
     </table>
 
     <div class="cadastro-link">
-        <a th:href="@{/dentista/consulta-form}" class="btn">Cadastrar Consulta</a>
+        <a th:href="@{/dentista/consultas/nova}" class="btn">Cadastrar Consulta</a>
     </div>
 </main>
 

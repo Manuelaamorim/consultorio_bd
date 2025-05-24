@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Consulta</title>
+    <link rel="stylesheet" th:href="@{/consulta-form.css}">
+</head>
+<body>
+
+<header class="navbar">
+    <div class="logo">Consultório Aida Cavalcanti</div>
+    <nav class="nav-links">
+        <a th:href="@{/auxiliar/consultas}" class="nav-link">Consultas</a>
+        <a th:href="@{/pacientes}" class="nav-link">Pacientes</a>
+        <a th:href="@{/logout}" class="nav-link">Sair</a>
+    </nav>
+</header>
+
+<main class="conteudo">
+    <h1>Editar Consulta</h1>
+    <p>Preencha apenas os campos que deseja alterar.</p>
+
+    <form method="post" th:action="@{'/auxiliar/consultas/editar/' + ${consulta.id}}" class="formulario">
+        <input type="hidden" name="id" th:value="${consulta.id}">
+
+        <div class="campo">
+            <label for="data">Data:</label>
+            <input type="date" id="data" name="data">
+        </div>
+
+        <div class="campo">
+            <label for="inicio">Horário Início:</label>
+            <input type="time" id="inicio" name="horarioInicio">
+        </div>
+
+        <div class="campo">
+            <label for="termino">Horário Término:</label>
+            <input type="time" id="termino" name="horarioTermino">
+        </div>
+
+        <div class="campo">
+            <label for="status">Status Pagamento:</label>
+            <input type="text" id="status" name="statusPagamento" placeholder="Pago, Pendente...">
+        </div>
+
+        <div class="campo">
+            <label for="metodo">Método Pagamento:</label>
+            <input type="text" id="metodo" name="metodoPagamento" placeholder="Pix, Cartão...">
+        </div>
+
+        <div class="campo">
+            <label for="paciente">Paciente (ID):</label>
+            <input type="number" id="paciente" name="idPaciente" min="1">
+        </div>
+
+        <div class="campo">
+            <label for="dentista">Dentista (ID):</label>
+            <input type="number" id="dentista" name="idDentista" min="1">
+        </div>
+
+        <button type="submit" class="botao-submit">Salvar Alterações</button>
+    </form>
+
+    <a th:href="@{/auxiliar/consultas}" class="botao-voltar">Voltar</a>
+</main>
+
+</body>
+</html>
