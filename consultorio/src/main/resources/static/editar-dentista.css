@@ -4,7 +4,10 @@ body {
     margin: 0;
     padding: 0;
 }
-
+a {
+    text-decoration: none;
+    color: #3a2e2e;
+}
 /* Navbar fixa com largura controlada */
 .navbar {
     position: fixed;
