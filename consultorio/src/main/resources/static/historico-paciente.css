@@ -1,0 +1,145 @@
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5f0e6;
+  color: #3a2e2e;
+}
+
+/* Navbar fixa */
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: #fffdf9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Logo */
+.logo {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #3a2e2e;
+}
+
+/* Links de navegação */
+.nav-links {
+  display: flex;
+  gap: 30px;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #3a2e2e;
+  font-weight: 500;
+  padding: 8px 12px;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #a28b63; /* tom pastel elegante */
+  font-weight: 600;
+  transform: translateY(-3px);
+}
+
+/* Container principal ajustado para compensar navbar fixa */
+.container {
+  max-width: 1000px;
+  margin: 130px auto 30px auto; /* margin-top maior para navbar fixa */
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Header */
+.header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.header h1 {
+  font-size: 28px;
+  color: #3a2e2e;
+}
+
+.header h2 {
+  margin-top: 10px;
+  color: #6a5d5d;
+}
+
+/* Cards */
+.card {
+  background-color: #fffdf9;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border-left: 6px solid #8c7a6b;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.card h3, .card h2 {
+  margin-bottom: 10px;
+  color: #3a2e2e;
+  text-align: left;
+}
+
+/* Listas */
+ul {
+  padding-left: 20px;
+}
+
+ul li {
+  margin-bottom: 5px;
+}
+
+/* Botões centralizados */
+.botoes {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.btn {
+  background-color: #a28b63;
+  color: white;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.btn:hover {
+  background-color: #a18d7b;
+}
+
+/* Dashboard e layout flexível */
+.dashboard {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 40px;
+}
+
+/* Containers de gráficos */
+.chart-container {
+  width: 300px;
+  height: 300px;
+  margin: 0 auto;
+}
+
+.chart-container-grande {
+  width: 80%;
+  max-w

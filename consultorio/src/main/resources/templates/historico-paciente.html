@@ -3,34 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <title>Histórico do Paciente</title>
-    <link rel="stylesheet" th:href="@{/styles.css}">
+    <link rel="stylesheet" th:href="@{/historico-paciente.css}">
 </head>
 <body>
-<header>
-    <a th:href="@{/pacientes}">Voltar à lista de pacientes</a>
+
+<header class="navbar">
+    <div class="logo">Consultório Aida Cavalcanti</div>
+    <nav class="nav-links">
+        <a th:href="@{/dentista/consultas}" class="nav-link">Consultas</a>
+        <a th:href="@{/pacientes}" class="nav-link">Pacientes</a>
+        <a th:href="@{/dentista/procedimentos}" class="nav-link">Procedimentos</a>
+        <a th:href="@{/logout}" class="nav-link">Sair</a>
+    </nav>
 </header>
+<div class="container">
+    <div class="header">
+        <h1>Histórico do Paciente</h1>
+        <h2 th:text="'Paciente: ' + ${paciente.nome}"></h2>
+        <p th:text="'CPF: ' + ${paciente.cpf}"></p>
+    </div>
 
-<h1>Histórico de Consultas - <span th:text="${paciente.nome}"></span></h1>
+    <div class="historico">
+        <div th:if="${#lists.isEmpty(consultas)}">
+            <p>Não há consultas registradas para este paciente.</p>
+        </div>
 
-<table>
-    <thead>
-    <tr>
-        <th>Data</th>
-        <th>Início</th>
-        <th>Término</th>
-        <th>Status Pagamento</th>
-        <th>Método Pagamento</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="consulta : ${consultas}">
-        <td th:text="${consulta.data}"></td>
-        <td th:text="${consulta.horarioInicio}"></td>
-        <td th:text="${consulta.horarioTermino}"></td>
-        <td th:text="${consulta.statusPagamento}"></td>
-        <td th:text="${consulta.metodoPagamento}"></td>
-    </tr>
-    </tbody>
-</table>
+        <div th:each="consulta : ${consultas}" class="card">
+            <h3 th:text="'Consulta ID: ' + ${consulta.id}"></h3>
+            <p><strong>ID Dentista:</strong> <span th:text="${consulta.idDentista}"></span></p>
+            <p><strong>Data:</strong> <span th:text="${consulta.data}"></span></p>
+            <p><strong>Horário:</strong>
+                <span th:text="${consulta.horarioInicio}"></span> -
+                <span th:text="${consulta.horarioTermino}"></span>
+            </p>
+            <p><strong>Status Pagamento:</strong> <span th:text="${consulta.statusPagamento}"></span></p>
+            <p><strong>Método Pagamento:</strong> <span th:text="${consulta.metodoPagamento}"></span></p>
+        </div>
+    </div>
+
+    <div class="botoes">
+        <a href="/pacientes" class="btn">Voltar para Lista de Pacientes</a>
+    </div>
+</div>
+
 </body>
 </html>
