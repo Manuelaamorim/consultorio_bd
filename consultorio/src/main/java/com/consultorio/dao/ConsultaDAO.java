@@ -22,32 +22,29 @@ public class ConsultaDAO {
     private JdbcTemplate jdbcTemplate;
 
     public int salvar(Consulta consulta) {
-        String sql = "INSERT INTO consulta (data, horario_inicio, horario_termino, status_pagamento, metodo_pagamento, id_paciente, id_dentista) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setDate(1, java.sql.Date.valueOf(consulta.getData()));
-            ps.setTime(2, java.sql.Time.valueOf(consulta.getHorarioInicio()));
-            ps.setTime(3, java.sql.Time.valueOf(consulta.getHorarioTermino()));
-            ps.setString(4, consulta.getStatusPagamento());
-            ps.setString(5, consulta.getMetodoPagamento());
-            ps.setInt(6, consulta.getIdPaciente());
-            ps.setInt(7, consulta.getIdDentista());
-            return ps;
-        }, keyHolder);
-
-        int consultaId = keyHolder.getKey().intValue();
-
-        // Insere procedimentos associados
-        if (consulta.getProcedimentos() != null) {
-            for (String codigo : consulta.getProcedimentos()) {
-                jdbcTemplate.update("INSERT INTO consulta_procedimento (consulta_id, procedimento_codigo) VALUES (?, ?)",
-                        consultaId, codigo);
-            }
+        // Converte List<String> procedimentos para String separada por vírgula
+        String procedimentosConcatenados = null;
+        if (consulta.getProcedimentos() != null && !consulta.getProcedimentos().isEmpty()) {
+            procedimentosConcatenados = String.join(",", consulta.getProcedimentos());
+        } else {
+            procedimentosConcatenados = ""; // ou NULL, conforme preferir
         }
+
+        String sql = "CALL registrar_consulta(?, ?, ?, ?, ?, ?, ?, ?)";
+
+        jdbcTemplate.update(sql,
+                consulta.getData(),
+                consulta.getHorarioInicio(),
+                consulta.getHorarioTermino(),
+                consulta.getStatusPagamento(),
+                consulta.getMetodoPagamento(),
+                consulta.getIdPaciente(),
+                consulta.getIdDentista(),
+                procedimentosConcatenados
+        );
+
+        // Recupera o último ID inserido da consulta (pode ser feito também via OUT param na procedure)
+        Integer consultaId = jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
 
         return consultaId;
     }

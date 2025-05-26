@@ -12,7 +12,9 @@ CREATE TABLE paciente (
 	numero VARCHAR(10),
 	bairro VARCHAR(50),
 	cidade VARCHAR(50),
-	data_nascimento DATE
+	data_nascimento DATE,
+	id_indicador INT,
+	FOREIGN KEY (id_indicador) REFERENCES paciente(id)
 );
 
 CREATE TABLE dentista (
@@ -75,7 +77,6 @@ CREATE TABLE consulta (
     FOREIGN KEY (id_dentista) REFERENCES dentista(id)
 );
 
--- Criar tabela relacional para associar consultas a procedimentos
 CREATE TABLE consulta_procedimento (
     consulta_id INT NOT NULL,
     procedimento_codigo VARCHAR(20) NOT NULL,
@@ -83,6 +84,7 @@ CREATE TABLE consulta_procedimento (
     FOREIGN KEY (consulta_id) REFERENCES consulta(id) ON DELETE CASCADE,
     FOREIGN KEY (procedimento_codigo) REFERENCES procedimento(codigo) ON DELETE CASCADE
 );
+
 CREATE TABLE historico_pagamento (
     id INT AUTO_INCREMENT PRIMARY KEY,
     consulta_id INT NOT NULL,
@@ -93,6 +95,7 @@ CREATE TABLE historico_pagamento (
     metodo_pagamento_novo VARCHAR(20),
     FOREIGN KEY (consulta_id) REFERENCES consulta(id) ON DELETE CASCADE
 );
+
 CREATE TRIGGER trg_historico_pagamento
 AFTER UPDATE ON consulta
 FOR EACH ROW
@@ -114,3 +117,61 @@ BEGIN
         );
     END IF;
 END;
+
+CREATE PROCEDURE registrar_consulta (
+    IN p_data DATE,
+    IN p_horario_inicio TIME,
+    IN p_horario_termino TIME,
+    IN p_status_pagamento VARCHAR(20),
+    IN p_metodo_pagamento VARCHAR(20),
+    IN p_id_paciente INT,
+    IN p_id_dentista INT,
+    IN p_procedimentos TEXT -- Lista de códigos separados por vírgula
+)
+BEGIN
+    DECLARE novo_id INT;
+    DECLARE proc_codigo VARCHAR(20);
+    DECLARE pos INT DEFAULT 1;
+
+    -- Inserir na tabela consulta
+    INSERT INTO consulta (data, horario_inicio, horario_termino, status_pagamento, metodo_pagamento, id_paciente, id_dentista)
+    VALUES (p_data, p_horario_inicio, p_horario_termino, p_status_pagamento, p_metodo_pagamento, p_id_paciente, p_id_dentista);
+
+    -- Capturar o ID da consulta recém-criada
+    SET novo_id = LAST_INSERT_ID();
+
+    -- Loop para separar os procedimentos pela vírgula
+    WHILE CHAR_LENGTH(p_procedimentos) > 0 DO
+        SET pos = LOCATE(',', p_procedimentos);
+
+        IF pos > 0 THEN
+            SET proc_codigo = TRIM(SUBSTRING(p_procedimentos, 1, pos - 1));
+            SET p_procedimentos = SUBSTRING(p_procedimentos, pos + 1);
+        ELSE
+            SET proc_codigo = TRIM(p_procedimentos);
+            SET p_procedimentos = '';
+        END IF;
+
+        -- Inserir na tabela consulta_procedimento
+        IF proc_codigo <> '' THEN
+            INSERT INTO consulta_procedimento (consulta_id, procedimento_codigo)
+            VALUES (novo_id, proc_codigo);
+        END IF;
+    END WHILE;
+END;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
