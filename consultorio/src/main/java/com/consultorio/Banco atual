@@ -83,3 +83,34 @@ CREATE TABLE consulta_procedimento (
     FOREIGN KEY (consulta_id) REFERENCES consulta(id) ON DELETE CASCADE,
     FOREIGN KEY (procedimento_codigo) REFERENCES procedimento(codigo) ON DELETE CASCADE
 );
+CREATE TABLE historico_pagamento (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    consulta_id INT NOT NULL,
+    status_anterior VARCHAR(20) NOT NULL,
+    status_novo VARCHAR(20) NOT NULL,
+    data_alteracao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    metodo_pagamento_anterior VARCHAR(20),
+    metodo_pagamento_novo VARCHAR(20),
+    FOREIGN KEY (consulta_id) REFERENCES consulta(id) ON DELETE CASCADE
+);
+CREATE TRIGGER trg_historico_pagamento
+AFTER UPDATE ON consulta
+FOR EACH ROW
+BEGIN
+    IF OLD.status_pagamento <> NEW.status_pagamento
+       OR OLD.metodo_pagamento <> NEW.metodo_pagamento THEN
+        INSERT INTO historico_pagamento (
+            consulta_id,
+            status_anterior,
+            status_novo,
+            metodo_pagamento_anterior,
+            metodo_pagamento_novo
+        ) VALUES (
+            OLD.id,
+            OLD.status_pagamento,
+            NEW.status_pagamento,
+            OLD.metodo_pagamento,
+            NEW.metodo_pagamento
+        );
+    END IF;
+END;
