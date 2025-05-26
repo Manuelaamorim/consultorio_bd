@@ -4,6 +4,7 @@ import com.consultorio.dao.DashboardDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -66,5 +67,28 @@ public class DashboardController {
             @RequestParam(defaultValue = "geral") String periodo) {
         return dashboardDAO.getStatusPagamentoPorPeriodo(dentistaId, periodo);
     }
+
+    @GetMapping("/faturamento-anual")
+    @ResponseBody
+    public Map<String, Object> faturamentoAnual(@RequestParam int dentistaId, @RequestParam int ano) {
+        BigDecimal total = dashboardDAO.getFaturamentoAnual(dentistaId, ano);
+        Map<String, Object> response = new HashMap<>();
+        response.put("valor", total);
+        return response;
+    }
+
+    @GetMapping("/pacientes-atendidos")
+    @ResponseBody
+    public Map<String, Object> pacientesAtendidos(
+            @RequestParam int dentistaId,
+            @RequestParam int ano) {
+        int total = dashboardDAO.getPacientesAtendidos(dentistaId, ano);
+        Map<String, Object> response = new HashMap<>();
+        response.put("total", total);
+        return response;
+    }
+
+
+
 
 }

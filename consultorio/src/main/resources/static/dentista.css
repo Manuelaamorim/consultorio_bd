@@ -50,7 +50,7 @@ body {
 }
 
 .nav-link:hover {
-  color: #a28b63; /* tom pastel elegante */
+  color: #a28b63;
   font-weight: 600;
   transform: translateY(-3px);
 }
@@ -69,6 +69,14 @@ body {
   margin-top: 40px;
 }
 
+.linha-cards {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  justify-content: center;
+}
+
+/* Cards */
 .card {
   background-color: #fffdf9;
   padding: 20px;
@@ -78,17 +86,48 @@ body {
   text-align: center;
 }
 
-    .card h2 {
-      margin-bottom: 15px;
-      color: #3a2e2e;
-    }
+.card h2 {
+  margin-bottom: 15px;
+  color: #3a2e2e;
+}
 
-    .chart-container {
-      width: 300px;
-      height: 300px;
-      margin: 0 auto;
-    }
+.chart-container {
+  width: 300px;
+  height: 300px;
+  margin: 0 auto;
+}
 
+/* Card pequeno (para faturamento e outros indicadores) */
+.card.pequeno {
+  flex: 0 0 200px;
+  padding: 1rem;
+  background-color: #fffdf9;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.card.pequeno h2 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: #3a2e2e;
+}
+
+.card.pequeno h3 {
+  font-size: 0.8em; /* ou outro tamanho que preferir */
+  font-weight: normal;
+  margin-top: -10px; /* opcional: aproxima do h2 */
+  color: #666; /* opcional: cor mais suave */
+}
+
+
+.card.pequeno p {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #a28b63;
+}
+
+/* Outros elementos */
 .comparativo {
   margin-top: 10px;
   font-size: 14px;
@@ -118,19 +157,13 @@ body {
   color: #3a2e2e;
 }
 
-.comparativo {
-  margin-top: 10px;
-  font-size: 14px;
-  color: #3a2e2e;
-}
-
 .mensagem-sucesso {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-    padding: 10px;
-    border-radius: 5px;
-    margin: 15px 0;
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+  padding: 10px;
+  border-radius: 5px;
+  margin: 15px 0;
 }
 
 .lista-consultas {
@@ -146,4 +179,10 @@ body {
   padding: 10px;
   margin-bottom: 8px;
   text-align: left;
+}
+
+.scroll-list {
+  max-height: 275px; /* ajuste conforme quiser */
+  overflow-y: auto;
+  padding-right: 5px; /* espaço para scrollbar */
 }

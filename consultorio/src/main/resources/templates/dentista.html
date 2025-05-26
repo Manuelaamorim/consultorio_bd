@@ -21,16 +21,35 @@
 <main class="conteudo">
   <h1>Bem-vindo, Dentista!</h1>
 
-  <div class="dashboard">
+  <div class="linha-cards">
+    <div class="card pequeno">
+      <h2>Faturamento Anual</h2>
+      <p id="faturamentoValor">R$ 0,00</p>
+    </div>
+
+    <div class="card pequeno">
+      <h2>Pacientes Atendidos</h2>
+      <h3>(no ano)</h3>
+      <p id="pacientesAtendidosValor">0</p>
+    </div>
+
+  </div>
+
+  <div class="linha-cards">
     <div class="card">
       <h2>Consultas Hoje</h2>
-      <ul id="consultasHoje"></ul>
+      <div class="scroll-list">
+        <ul id="consultasHoje" class="lista-consultas"></ul>
+      </div>
     </div>
 
     <div class="card">
       <h2>Consultas no Mês</h2>
-      <ul id="consultasMes" class="lista-consultas"></ul>
+      <div class="scroll-list">
+        <ul id="consultasMes" class="lista-consultas"></ul>
+      </div>
     </div>
+
 
     <div class="card">
       <h2>Status de Pagamento</h2>
@@ -66,102 +85,100 @@
 <script>
   const dentistaId = 1; // Ajuste conforme o dentista logado
 
-  // Consultas Hoje
-fetch(`/dashboard/consultas-hoje?dentistaId=${dentistaId}`)
-  .then(res => res.json())
-  .then(data => {
-    const ul = document.getElementById('consultasHoje');
-    ul.innerHTML = ''; // Limpa a lista antes
-    if (data.length === 0) {
-      const li = document.createElement('li');
-      li.textContent = "Nenhuma consulta agendada para hoje.";
-      ul.appendChild(li);
-    } else {
-      data.forEach(c => {
-        const li = document.createElement('li');
-        li.innerHTML = `<strong>${c.nome}</strong> <br> ${c.horario_inicio} - ${c.horario_termino}`;
-        ul.appendChild(li);
+  // Faturamento Anual
+  function carregarFaturamentoAnual() {
+    const anoAtual = new Date().getFullYear();
+    fetch(`/dashboard/faturamento-anual?dentistaId=${dentistaId}&ano=${anoAtual}`)
+      .then(res => res.json())
+      .then(data => {
+        const valor = data.valor ? parseFloat(data.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : 'R$ 0,00';
+        document.getElementById('faturamentoValor').textContent = valor;
+      })
+      .catch(() => {
+        document.getElementById('faturamentoValor').textContent = 'Erro';
       });
-    }
-  });
+  }
+  carregarFaturamentoAnual();
 
+  function carregarPacientesAtendidos() {
+  const anoAtual = new Date().getFullYear();
+  fetch(`/dashboard/pacientes-atendidos?dentistaId=${dentistaId}&ano=${anoAtual}`)
+    .then(res => res.json())
+    .then(data => {
+      const valor = data.total ? data.total : 0;
+      document.getElementById('pacientesAtendidosValor').textContent = valor;
+    })
+    .catch(() => {
+      document.getElementById('pacientesAtendidosValor').textContent = 'Erro';
+    });
+  }
+
+  carregarPacientesAtendidos();
+
+
+  // Consultas Hoje
+  fetch(`/dashboard/consultas-hoje?dentistaId=${dentistaId}`)
+    .then(res => res.json())
+    .then(data => {
+      const ul = document.getElementById('consultasHoje');
+      ul.innerHTML = '';
+      if (data.length === 0) {
+        const li = document.createElement('li');
+        li.textContent = "Nenhuma consulta agendada para hoje.";
+        ul.appendChild(li);
+      } else {
+        data.forEach(c => {
+          const li = document.createElement('li');
+          li.innerHTML = `<strong>${c.nome}</strong> <br> ${c.horario_inicio} - ${c.horario_termino}`;
+          ul.appendChild(li);
+        });
+      }
+    });
 
   // Consultas no Mês
-fetch(`/dashboard/consultas-mes?dentistaId=${dentistaId}`)
-  .then(res => res.json())
-  .then(data => {
-    const ul = document.getElementById('consultasMes');
-    ul.innerHTML = '';
-
-    if (data.length === 0) {
-      const li = document.createElement('li');
-      li.textContent = "Nenhuma consulta agendada para este mês.";
-      ul.appendChild(li);
-    } else {
-      // Ordena por data e horário (precaução, caso backend não ordene)
-      data.sort((a, b) => {
-        const dataA = new Date(`${a.data}T${a.horario_inicio}`);
-        const dataB = new Date(`${b.data}T${b.horario_inicio}`);
-        return dataA - dataB;
-      });
-
-      data.forEach(c => {
+  fetch(`/dashboard/consultas-mes?dentistaId=${dentistaId}`)
+    .then(res => res.json())
+    .then(data => {
+      const ul = document.getElementById('consultasMes');
+      ul.innerHTML = '';
+      if (data.length === 0) {
         const li = document.createElement('li');
-        li.innerHTML = `<strong>${c.nome}</strong> <br> ${c.data} ${c.horario_inicio} - ${c.horario_termino}`;
+        li.textContent = "Nenhuma consulta agendada para este mês.";
         ul.appendChild(li);
-      });
-    }
-  });
+      } else {
+        data.sort((a, b) => new Date(`${a.data}T${a.horario_inicio}`) - new Date(`${b.data}T${b.horario_inicio}`));
+        data.forEach(c => {
+          const li = document.createElement('li');
+          li.innerHTML = `<strong>${c.nome}</strong> <br> ${c.data} ${c.horario_inicio} - ${c.horario_termino}`;
+          ul.appendChild(li);
+        });
+      }
+    });
 
-
-  // Status de Pagamento - Gráfico de Pizza
+  // Status de Pagamento
   let statusChart;
-
   function carregarStatusPagamento(periodo) {
     fetch(`/dashboard/status-pagamento?dentistaId=${dentistaId}&periodo=${periodo}`)
       .then(res => res.json())
       .then(data => {
         const ctx = document.getElementById('statusPagamentoChart').getContext('2d');
-        if (statusChart) {
-          statusChart.destroy();
-        }
-
+        if (statusChart) statusChart.destroy();
         const labels = data.map(s => s.status_pagamento);
         const values = data.map(s => s.total);
-
         statusChart = new Chart(ctx, {
           type: 'pie',
-          data: {
-            labels: labels,
-            datasets: [{
-              data: values,
-              backgroundColor: ['#f5f0e6', '#a28b63', '#3a2e2e'],
-              borderWidth: 1
-            }]
-          },
-          options: {
-            responsive: true,
-            plugins: {
-              legend: {
-                position: 'bottom',
-                labels: { color: '#3a2e2e' }
-              }
-            }
-          }
+          data: { labels, datasets: [{ data: values, backgroundColor: ['#f5f0e6', '#a28b63', '#3a2e2e'], borderWidth: 1 }] },
+          options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#3a2e2e' } } } }
         });
       });
   }
-
   carregarStatusPagamento('geral');
-
   document.getElementById('periodo').addEventListener('change', function() {
-    const periodoSelecionado = this.value;
-    carregarStatusPagamento(periodoSelecionado);
+    carregarStatusPagamento(this.value);
   });
 
-  // Consultas por Mês - Gráfico de Barras
+  // Consultas por Mês
   let consultasChart;
-
   function carregarConsultasPorMes(ano) {
     fetch(`/dashboard/consultas-por-mes?dentistaId=${dentistaId}&ano=${ano}`)
       .then(res => res.json())
@@ -169,60 +186,24 @@ fetch(`/dashboard/consultas-mes?dentistaId=${dentistaId}`)
         const ctx = document.getElementById('consultasMesChart').getContext('2d');
         const labels = Array.from({length: 12}, (_, i) => `${i + 1}`);
         const valores = new Array(12).fill(0);
-
-        data.forEach(item => {
-          valores[item.mes - 1] = item.total;
-        });
-
-        if (consultasChart) {
-          consultasChart.destroy();
-        }
-
+        data.forEach(item => { valores[item.mes - 1] = item.total; });
+        if (consultasChart) consultasChart.destroy();
         consultasChart = new Chart(ctx, {
           type: 'bar',
-          data: {
-            labels: labels,
-            datasets: [{
-              label: 'Consultas',
-              data: valores,
-              backgroundColor: '#a28b63',
-              borderColor: '#3a2e2e',
-              borderWidth: 1
-            }]
-          },
-          options: {
-            responsive: true,
-            scales: {
-              y: {
-                beginAtZero: true,
-                ticks: {
-                  stepSize: 1
-                }
-              }
-            }
-          }
+          data: { labels, datasets: [{ label: 'Consultas', data: valores, backgroundColor: '#a28b63', borderColor: '#3a2e2e', borderWidth: 1 }] },
+          options: { responsive: true, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
         });
       });
   }
-
 
   function carregarComparativo(ano) {
     fetch(`/dashboard/comparativo?dentistaId=${dentistaId}&ano=${ano}`)
       .then(res => res.json())
       .then(data => {
         const texto = document.getElementById('comparativoTexto');
-        let variacao = data.variacao.toFixed(2);
-        let descricao = "Comparativo com o mesmo período do ano anterior: ";
-
-        if (variacao > 0) {
-          descricao += `⬆️ Aumento de ${variacao}%`;
-        } else if (variacao < 0) {
-          descricao += `⬇️ Queda de ${Math.abs(variacao)}%`;
-        } else {
-          descricao += "Sem variação";
-        }
-
-        texto.textContent = descricao;
+        const variacao = data.variacao.toFixed(2);
+        texto.textContent = "Comparativo com o mesmo período do ano anterior: " +
+          (variacao > 0 ? `⬆️ Aumento de ${variacao}%` : variacao < 0 ? `⬇️ Queda de ${Math.abs(variacao)}%` : "Sem variação");
       });
   }
 
@@ -231,9 +212,7 @@ fetch(`/dashboard/consultas-mes?dentistaId=${dentistaId}`)
     carregarConsultasPorMes(ano);
     carregarComparativo(ano);
   }
-
   document.getElementById('anoSelect').addEventListener('change', atualizarGraficoConsultas);
-
   atualizarGraficoConsultas();
 </script>
 </body>

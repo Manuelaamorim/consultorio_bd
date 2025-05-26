@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -76,5 +77,32 @@ public class DashboardDAO {
 
         return jdbcTemplate.queryForList(sqlBase, dentistaId);
     }
+
+    public BigDecimal getFaturamentoAnual(int dentistaId, int ano) {
+        String sql = """
+        SELECT SUM(p.valor) 
+        FROM consulta c
+        JOIN consulta_procedimento cp ON c.id = cp.consulta_id
+        JOIN procedimento p ON cp.procedimento_codigo = p.codigo
+        WHERE c.id_dentista = ? 
+          AND YEAR(c.data) = ? 
+          AND LOWER(c.status_pagamento) = 'pago'
+    """;
+        BigDecimal total = jdbcTemplate.queryForObject(sql, BigDecimal.class, dentistaId, ano);
+        return total != null ? total : BigDecimal.ZERO;
+    }
+
+    public int getPacientesAtendidos(int dentistaId, int ano) {
+        String sql = """
+        SELECT COUNT(DISTINCT c.id_paciente) 
+        FROM consulta c
+        WHERE c.id_dentista = ? 
+          AND YEAR(c.data) = ? 
+          AND c.data <= CURDATE()
+    """;
+        Integer total = jdbcTemplate.queryForObject(sql, Integer.class, dentistaId, ano);
+        return total != null ? total : 0;
+    }
+
 
 }
