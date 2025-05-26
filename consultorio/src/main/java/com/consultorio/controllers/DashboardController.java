@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -134,11 +135,32 @@ public class DashboardController {
         return dashboardDAO.getProcedimentoMaisRealizado(dentistaId);
     }
 
-    @GetMapping("/idade-media-pacientes")
+
+    @GetMapping("/procedimentos-faturamento")
     @ResponseBody
-    public Map<String, Object> idadeMediaPacientes(@RequestParam int dentistaId) {
-        double idadeMedia = dashboardDAO.getIdadeMediaPacientes(dentistaId);
-        return Map.of("idadeMedia", idadeMedia);
+    public List<Map<String, Object>> procedimentosFaturamento(
+            @RequestParam int dentistaId,
+            @RequestParam int ano) {
+
+        // 1. Busca a lista de procedimentos com faturamento
+        List<Map<String, Object>> lista = dashboardDAO.getProcedimentosFaturamento(dentistaId, ano);
+
+        // 2. Busca o faturamento total anual (reutiliza seu método existente)
+        BigDecimal faturamentoTotal = dashboardDAO.getFaturamentoAnual(dentistaId, ano);
+
+        // 3. Calcula o percentual para cada procedimento
+        for (Map<String, Object> item : lista) {
+            BigDecimal faturamento = (BigDecimal) item.get("faturamento");
+            double percentual = faturamentoTotal.compareTo(BigDecimal.ZERO) > 0
+                    ? faturamento.multiply(BigDecimal.valueOf(100))
+                    .divide(faturamentoTotal, 2, RoundingMode.HALF_UP)
+                    .doubleValue()
+                    : 0.0;
+            item.put("percentual", percentual);
+        }
+
+        // 4. Retorna a lista com nome, faturamento e percentual
+        return lista;
     }
 
 

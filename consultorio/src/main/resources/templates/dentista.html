@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Página do Dentista</title>
   <link rel="stylesheet" th:href="@{/dentista.css}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js/dist/Chart.min.css">
 </head>
 <body>
 
@@ -18,11 +19,10 @@
   </nav>
 </header>
 
-<main class="conteudo">
+<main class="container">
   <h1>Bem-vindo, Dentista!</h1>
 
-  <div class="linha-cards">
-
+  <section class="cards-linha">
     <div class="card pequeno">
       <h2>Faturamento Anual</h2>
       <p id="faturamentoValor">R$ 0,00</p>
@@ -35,13 +35,6 @@
     </div>
 
     <div class="card pequeno">
-      <h2>Pacientes Atendidos</h2>
-      <h3>(no ano)</h3>
-      <p id="pacientesAtendidosValor">0</p>
-    </div>
-
-
-    <div class="card pequeno">
       <h2>Pagamentos Pendentes</h2>
       <p id="consultasPendentesValor">0</p>
     </div>
@@ -49,23 +42,16 @@
     <div class="card pequeno">
       <h2>Tempo Médio</h2>
       <h3>(Duração consulta)</h3>
-      <p id="tempoMedioValor">0</p>
+      <p id="tempoMedioValor">0 min</p>
     </div>
 
     <div class="card pequeno">
       <h2>Procedimento mais Realizado</h2>
       <p id="procedimentoMaisValor">-</p>
     </div>
+  </section>
 
-    <div class="card pequeno">
-      <h2>Idade Média</h2>
-      <h3>(pacientes)</h3>
-      <p id="idadeMediaValor">0</p>
-    </div>
-
-  </div>
-
-  <div class="linha-cards">
+  <section class="cards-linha">
     <div class="card">
       <h2>Consultas Hoje</h2>
       <div class="scroll-list">
@@ -80,7 +66,6 @@
       </div>
     </div>
 
-
     <div class="card">
       <h2>Status de Pagamento</h2>
       <label for="periodo">Período:</label>
@@ -94,9 +79,9 @@
         <canvas id="statusPagamentoChart"></canvas>
       </div>
     </div>
-  </div>
+  </section>
 
-  <div class="grafico-consultas">
+  <section class="grafico-consultas">
     <h2>Consultas por Mês</h2>
     <label for="anoSelect">Ano:</label>
     <select id="anoSelect">
@@ -106,17 +91,36 @@
     </select>
     <div class="chart-container-grande">
       <canvas id="consultasMesChart"></canvas>
-  </div>
-
-  <div class="grafico-faturamento">
-    <h2>Faturamento Mensal Comparativo</h2>
-    <div class="chart-container-grande">
-      <canvas id="faturamentoAnualChart"></canvas>
     </div>
-  </div>
+  </section>
 
+  <section class="linha-faturamento">
+    <div class="grafico-faturamento">
+      <h2>Faturamento Mensal Comparativo</h2>
 
+      <div class="chart-container-grande">
+        <canvas id="faturamentoAnualChart"></canvas>
+      </div>
+    </div>
+
+    <div class="procedimentos-tabela">
+      <h2>Faturamento por Procedimento</h2>
+      <h3>(Ano vigente)</h3>
+
+      <table>
+        <thead>
+        <tr>
+          <th>Procedimento</th>
+          <th>Faturamento</th>
+          <th>Percentual</th>
+        </tr>
+        </thead>
+        <tbody id="tabelaProcedimentos"></tbody>
+      </table>
+    </div>
+  </section>
 </main>
+
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -136,21 +140,6 @@
       });
   }
   carregarFaturamentoAnual();
-
-  function carregarPacientesAtendidos() {
-  const anoAtual = new Date().getFullYear();
-  fetch(`/dashboard/pacientes-atendidos?dentistaId=${dentistaId}&ano=${anoAtual}`)
-    .then(res => res.json())
-    .then(data => {
-      const valor = data.total ? data.total : 0;
-      document.getElementById('pacientesAtendidosValor').textContent = valor;
-    })
-    .catch(() => {
-      document.getElementById('pacientesAtendidosValor').textContent = 'Erro';
-    });
-  }
-
-  carregarPacientesAtendidos();
 
 
   // Consultas Hoje
@@ -407,20 +396,43 @@ carregarTempoMedio();
 
 carregarProcedimentoMais();
 
-  function carregarIdadeMedia() {
-  fetch(`/dashboard/idade-media-pacientes?dentistaId=${dentistaId}`)
+
+  function carregarProcedimentosFaturamento() {
+  const anoAtual = new Date().getFullYear();
+  fetch(`/dashboard/procedimentos-faturamento?dentistaId=${dentistaId}&ano=${anoAtual}`)
     .then(res => res.json())
     .then(data => {
-      const idade = data.idadeMedia ? Math.round(data.idadeMedia) : 0;
-      document.getElementById('idadeMediaValor').textContent = idade;
-    })
-    .catch(() => {
-      document.getElementById('idadeMediaValor').textContent = 'Erro';
+      const tbody = document.getElementById('tabelaProcedimentos');
+      tbody.innerHTML = '';
+
+      data.forEach(proc => {
+        const tr = document.createElement('tr');
+
+        const nome = document.createElement('td');
+        nome.textContent = proc.procedimento;
+
+        const faturamento = document.createElement('td');
+        faturamento.textContent = proc.faturamento.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+        const percentual = document.createElement('td');
+        percentual.innerHTML = `
+          ${proc.percentual}%
+          <div class="progress-bar">
+            <div class="progress" style="width: ${proc.percentual}%"></div>
+          </div>
+        `;
+
+        tr.appendChild(nome);
+        tr.appendChild(faturamento);
+        tr.appendChild(percentual);
+
+        tbody.appendChild(tr);
+      });
     });
 }
 
+  carregarProcedimentosFaturamento();
 
-carregarIdadeMedia();
 
 </script>
 </body>

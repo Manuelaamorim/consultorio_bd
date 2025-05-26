@@ -193,17 +193,21 @@ public class DashboardDAO {
     }
 
 
-    public double getIdadeMediaPacientes(int dentistaId) {
+    public List<Map<String, Object>> getProcedimentosFaturamento(int dentistaId, int ano) {
         String sql = """
-        SELECT AVG(TIMESTAMPDIFF(YEAR, p.data_nascimento, CURDATE()))
-        FROM paciente p
-        JOIN consulta c ON p.id = c.id_paciente
+        SELECT p.nome AS procedimento, SUM(p.valor) AS faturamento
+        FROM consulta c
+        JOIN consulta_procedimento cp ON c.id = cp.consulta_id
+        JOIN procedimento p ON cp.procedimento_codigo = p.codigo
         WHERE c.id_dentista = ?
+          AND YEAR(c.data) = ?
+          AND LOWER(c.status_pagamento) = 'pago'
+        GROUP BY p.nome
+        ORDER BY faturamento DESC
     """;
-
-        Double media = jdbcTemplate.queryForObject(sql, Double.class, dentistaId);
-        return media != null ? media : 0;
+        return jdbcTemplate.queryForList(sql, dentistaId, ano);
     }
+
 
 
 }
