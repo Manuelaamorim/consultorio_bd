@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -102,6 +103,106 @@ public class DashboardDAO {
     """;
         Integer total = jdbcTemplate.queryForObject(sql, Integer.class, dentistaId, ano);
         return total != null ? total : 0;
+    }
+
+    public int getTotalConsultas(int dentistaId, int ano) {
+        String sql = """
+        SELECT COUNT(*) 
+        FROM consulta 
+        WHERE id_dentista = ? 
+          AND YEAR(data) = ?
+    """;
+        Integer total = jdbcTemplate.queryForObject(sql, Integer.class, dentistaId, ano);
+        return total != null ? total : 0;
+    }
+
+
+    public List<BigDecimal> getFaturamentoMensalAcumulado(int dentistaId, int ano) {
+        String sql = """
+        SELECT MONTH(c.data) AS mes, SUM(p.valor) AS total
+        FROM consulta c
+        JOIN consulta_procedimento cp ON c.id = cp.consulta_id
+        JOIN procedimento p ON cp.procedimento_codigo = p.codigo
+        WHERE c.id_dentista = ? 
+          AND YEAR(c.data) = ?
+          AND LOWER(c.status_pagamento) = 'pago'
+        GROUP BY mes
+    """;
+
+        List<Map<String, Object>> resultados = jdbcTemplate.queryForList(sql, dentistaId, ano);
+
+        BigDecimal[] faturamentoPorMes = new BigDecimal[12];
+        Arrays.fill(faturamentoPorMes, BigDecimal.ZERO);
+
+        for (Map<String, Object> row : resultados) {
+            int mes = ((Number) row.get("mes")).intValue();
+            BigDecimal total = (BigDecimal) row.get("total");
+            faturamentoPorMes[mes - 1] = total != null ? total : BigDecimal.ZERO;
+        }
+
+        // Acumular
+        for (int i = 1; i < 12; i++) {
+            faturamentoPorMes[i] = faturamentoPorMes[i].add(faturamentoPorMes[i - 1]);
+        }
+
+        return Arrays.asList(faturamentoPorMes);
+    }
+
+
+    public int getConsultasPendentes(int dentistaId) {
+        String sql = """
+        SELECT COUNT(*) 
+        FROM consulta 
+        WHERE id_dentista = ? AND LOWER(status_pagamento) = 'pendente'
+    """;
+        Integer total = jdbcTemplate.queryForObject(sql, Integer.class, dentistaId);
+        return total != null ? total : 0;
+    }
+
+    public double getTempoMedioConsultas(int dentistaId) {
+        String sql = """
+        SELECT AVG(TIMESTAMPDIFF(MINUTE, horario_inicio, horario_termino)) 
+        FROM consulta 
+        WHERE id_dentista = ?
+          AND horario_inicio IS NOT NULL
+          AND horario_termino IS NOT NULL
+    """;
+        Double media = jdbcTemplate.queryForObject(sql, Double.class, dentistaId);
+        return media != null ? media : 0;
+    }
+
+
+    public Map<String, Object> getProcedimentoMaisRealizado(int dentistaId) {
+        String sql = """
+        SELECT p.nome, COUNT(*) AS qtd
+        FROM consulta c
+        JOIN consulta_procedimento cp ON c.id = cp.consulta_id
+        JOIN procedimento p ON cp.procedimento_codigo = p.codigo
+        WHERE c.id_dentista = ?
+        GROUP BY p.nome
+        ORDER BY qtd DESC
+        LIMIT 1
+    """;
+
+        List<Map<String, Object>> resultado = jdbcTemplate.queryForList(sql, dentistaId);
+        if (resultado.isEmpty()) {
+            return Map.of("nome", "-", "qtd", 0);
+        } else {
+            return resultado.get(0);
+        }
+    }
+
+
+    public double getIdadeMediaPacientes(int dentistaId) {
+        String sql = """
+        SELECT AVG(TIMESTAMPDIFF(YEAR, p.data_nascimento, CURDATE()))
+        FROM paciente p
+        JOIN consulta c ON p.id = c.id_paciente
+        WHERE c.id_dentista = ?
+    """;
+
+        Double media = jdbcTemplate.queryForObject(sql, Double.class, dentistaId);
+        return media != null ? media : 0;
     }
 
 

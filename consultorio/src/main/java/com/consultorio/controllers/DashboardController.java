@@ -88,6 +88,58 @@ public class DashboardController {
         return response;
     }
 
+    @GetMapping("/faturamento-mensal-acumulado")
+    @ResponseBody
+    public Map<String, Object> faturamentoMensal(
+            @RequestParam int dentistaId,
+            @RequestParam List<Integer> anos) {
+
+        Map<String, List<BigDecimal>> resultado = new HashMap<>();
+
+        for (int ano : anos) {
+            List<BigDecimal> faturamentoPorMes = dashboardDAO.getFaturamentoMensalAcumulado(dentistaId, ano);
+            resultado.put(String.valueOf(ano), faturamentoPorMes);
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("faturamento", resultado);
+        return response;
+    }
+
+    @GetMapping("/total-consultas")
+    @ResponseBody
+    public Map<String, Object> totalConsultas(@RequestParam int dentistaId, @RequestParam int ano) {
+        int total = dashboardDAO.getTotalConsultas(dentistaId, ano);
+        return Map.of("total", total);
+    }
+
+
+    @GetMapping("/consultas-pendentes")
+    @ResponseBody
+    public Map<String, Object> consultasPendentes(@RequestParam int dentistaId) {
+        int total = dashboardDAO.getConsultasPendentes(dentistaId);
+        return Map.of("total", total);
+    }
+
+    @GetMapping("/tempo-medio-consultas")
+    @ResponseBody
+    public Map<String, Object> tempoMedioConsultas(@RequestParam int dentistaId) {
+        double mediaMinutos = dashboardDAO.getTempoMedioConsultas(dentistaId);
+        return Map.of("mediaMinutos", mediaMinutos);
+    }
+
+    @GetMapping("/procedimento-mais")
+    @ResponseBody
+    public Map<String, Object> procedimentoMais(@RequestParam int dentistaId) {
+        return dashboardDAO.getProcedimentoMaisRealizado(dentistaId);
+    }
+
+    @GetMapping("/idade-media-pacientes")
+    @ResponseBody
+    public Map<String, Object> idadeMediaPacientes(@RequestParam int dentistaId) {
+        double idadeMedia = dashboardDAO.getIdadeMediaPacientes(dentistaId);
+        return Map.of("idadeMedia", idadeMedia);
+    }
 
 
 
