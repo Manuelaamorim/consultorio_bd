@@ -165,4 +165,62 @@ public class DashboardController {
 
 
 
+
+    // A PARTIR DAQUI COMECA AUXILIAR
+    // A PARTIR DAQUI COMECA AUXILIAR
+
+
+
+
+    @GetMapping("/auxiliar/faturamento-anual-total")
+    public Map<String, Object> faturamentoAnualTotal(@RequestParam int ano) {
+        BigDecimal total = dashboardDAO.getFaturamentoAnualTotal(ano);
+        return Map.of("valor", total);
+    }
+
+    @GetMapping("/auxiliar/total-consultas-geral")
+    public Map<String, Object> totalConsultasGeral(@RequestParam int ano) {
+        int total = dashboardDAO.getTotalConsultasGeral(ano);
+        return Map.of("total", total);
+    }
+
+    @GetMapping("/auxiliar/consultas-pendentes-geral")
+    public Map<String, Object> consultasPendentesGeral() {
+        int total = dashboardDAO.getConsultasPendentesGeral();
+        return Map.of("total", total);
+    }
+
+    @GetMapping("/auxiliar/tempo-medio-consultas-geral")
+    public Map<String, Object> tempoMedioConsultasGeral() {
+        double mediaMinutos = dashboardDAO.getTempoMedioConsultasGeral();
+        return Map.of("mediaMinutos", mediaMinutos);
+    }
+
+    @GetMapping("/auxiliar/total-pacientes-indicados")
+    public Map<String, Integer> totalPacientesIndicados() {
+        return dashboardDAO.getTotalPacientesEIndicados();
+    }
+
+
+    @GetMapping("/auxiliar/consultas-hoje")
+    public List<Map<String, Object>> consultasHojeTodos() {
+        return dashboardDAO.getConsultasHojeTodosDentistas();
+    }
+
+
+    @GetMapping("/auxiliar/status-pagamento")
+    public List<Map<String, Object>> statusPagamentoTodos(@RequestParam(defaultValue = "geral") String periodo) {
+        return dashboardDAO.getStatusPagamentoTodos(periodo);
+    }
+
+
+    @GetMapping("/auxiliar/cobrancas")
+    public List<Map<String, Object>> cobrancasPendentes() {
+        return dashboardDAO.getCobrancasPendentes();
+    }
+
+
+
+
+
 }

@@ -16,9 +16,290 @@
 
 </header>
 
-<main class="conteudo">
-    <h1>Bem-vindo, Auxiliar!</h1>
-    <p>Você está na página do Auxiliar.</p>
+<main class="container">
+    <h1>Bem-vindo(a), Auxiliar!</h1>
+
+    <section class="cards-linha">
+
+        <div class="card pequeno">
+            <h2>Faturamento Anual Total</h2>
+            <p id="faturamentoAnualTotal">R$ 0,00</p>
+        </div>
+
+        <div class="card pequeno">
+            <h2>Total Consultas</h2>
+            <h3>(no ano)</h3>
+            <p id="totalConsultasGeral">0</p>
+        </div>
+
+        <div class="card pequeno">
+            <h2>Pagamentos Pendentes</h2>
+            <p id="consultasPendentesGeral">0</p>
+        </div>
+
+        <div class="card pequeno">
+            <h2>Tempo Médio</h2>
+            <h3>(Todas consultas)</h3>
+            <p id="tempoMedioGeral">0 (min)</p>
+        </div>
+
+        <div class="card pequeno">
+            <h2>Pacientes por indicação</h2>
+            <h3>(Indicados / Total)</h3>
+            <p id="pacientesIndicadosValor">0 / 0</p>
+        </div>
+
+    </section>
+
+    <section class="cards-linha">
+
+        <div class="card">
+            <h2>Consultas Hoje</h2>
+            <div class="scroll-list">
+                <ul id="consultasHojeTodos" class="lista-consultas"></ul>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Lista de Cobrança</h2>
+            <h3>(Pagamentos pendentes)</h3>
+            <div class="scroll-list">
+                <ul id="listaCobrancas" class="lista-consultas"></ul>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <h2>Status de Pagamento</h2>
+            <label for="periodo">Período:</label>
+            <select id="periodo">
+                <option value="geral">Geral</option>
+                <option value="dia">Dia</option>
+                <option value="mes">Mês</option>
+                <option value="ano">Ano</option>
+            </select>
+            <div class="chart-container">
+                <canvas id="statusPagamentoChart"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <section class="grafico-consultas">
+        <h2>Consultas por Mês</h2>
+        <label for="anoSelect">Ano:</label>
+        <select id="anoSelect">
+            <option value="2023">2023</option>
+            <option value="2024" selected>2024</option>
+            <option value="2025">2025</option>
+        </select>
+        <div class="chart-container-grande">
+            <canvas id="consultasMesChart"></canvas>
+        </div>
+    </section>
+
+    <section class="linha-faturamento">
+        <div class="grafico-faturamento">
+            <h2>Faturamento Mensal Comparativo</h2>
+
+            <div class="chart-container-grande">
+                <canvas id="faturamentoAnualChart"></canvas>
+            </div>
+        </div>
+
+        <div class="procedimentos-tabela">
+            <h2>Faturamento por Procedimento</h2>
+            <h3>(Ano vigente)</h3>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>Procedimento</th>
+                    <th>Faturamento</th>
+                    <th>Percentual</th>
+                </tr>
+                </thead>
+                <tbody id="tabelaProcedimentos"></tbody>
+            </table>
+        </div>
+    </section>
 </main>
-</body>
-</html>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const auxiliarId = 1;
+
+    function carregarFaturamentoAnualTotal() {
+    const anoAtual = new Date().getFullYear();
+    fetch(`/dashboard/auxiliar/faturamento-anual-total?ano=${anoAtual}`)
+        .then(res => res.json())
+        .then(data => {
+            const valor = data.valor ? parseFloat(data.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : 'R$ 0,00';
+            document.getElementById('faturamentoAnualTotal').textContent = valor;
+        })
+        .catch(() => {
+            document.getElementById('faturamentoAnualTotal').textContent = 'Erro';
+        });
+}
+
+carregarFaturamentoAnualTotal();
+
+    function carregarTotalConsultasGeral() {
+    const anoAtual = new Date().getFullYear();
+    fetch(`/dashboard/auxiliar/total-consultas-geral?ano=${anoAtual}`)
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('totalConsultasGeral').textContent = data.total || 0;
+        })
+        .catch(() => {
+            document.getElementById('totalConsultasGeral').textContent = 'Erro';
+        });
+}
+
+carregarTotalConsultasGeral();
+
+    function carregarConsultasPendentesGeral() {
+    fetch(`/dashboard/auxiliar/consultas-pendentes-geral`)
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('consultasPendentesGeral').textContent = data.total || 0;
+        })
+        .catch(() => {
+            document.getElementById('consultasPendentesGeral').textContent = 'Erro';
+        });
+}
+
+carregarConsultasPendentesGeral();
+
+    function carregarTempoMedioGeral() {
+    fetch(`/dashboard/auxiliar/tempo-medio-consultas-geral`)
+        .then(res => res.json())
+        .then(data => {
+            const tempo = data.mediaMinutos ? Math.round(data.mediaMinutos) : 0;
+            document.getElementById('tempoMedioGeral').textContent = `${tempo} (min)`;
+        })
+        .catch(() => {
+            document.getElementById('tempoMedioGeral').textContent = 'Erro';
+        });
+}
+
+carregarTempoMedioGeral();
+
+    function carregarPacientesIndicados() {
+    fetch(`/dashboard/auxiliar/total-pacientes-indicados`)
+        .then(res => res.json())
+        .then(data => {
+            const total = data.total || 0;
+            const indicados = data.indicados || 0;
+            document.getElementById('pacientesIndicadosValor').textContent = `${indicados} / ${total}`;
+        })
+        .catch(() => {
+            document.getElementById('pacientesIndicadosValor').textContent = 'Erro';
+        });
+}
+
+carregarPacientesIndicados();
+
+    function carregarConsultasHojeTodos() {
+    fetch(`/dashboard/auxiliar/consultas-hoje`)
+        .then(res => res.json())
+        .then(data => {
+            const ul = document.getElementById('consultasHojeTodos');
+            ul.innerHTML = '';
+
+            if (data.length === 0) {
+                const li = document.createElement('li');
+                li.textContent = "Nenhuma consulta agendada para hoje.";
+                ul.appendChild(li);
+            } else {
+                data.forEach(c => {
+                    const horaInicio = c.horario_inicio.slice(0, 5);
+                    const horaTermino = c.horario_termino.slice(0, 5);
+
+                    const li = document.createElement('li');
+                    li.innerHTML = `<strong>${c.paciente}</strong><br>
+                                    ${horaInicio} - ${horaTermino}<br>
+                                    <em>Dentista: ${c.dentista}</em>`;
+                    ul.appendChild(li);
+                });
+            }
+        });
+}
+
+carregarConsultasHojeTodos();
+
+    let statusChart;
+function carregarStatusPagamentoTodos(periodo) {
+    fetch(`/dashboard/auxiliar/status-pagamento?periodo=${periodo}`)
+        .then(res => res.json())
+        .then(data => {
+            const ctx = document.getElementById('statusPagamentoChart').getContext('2d');
+            if (statusChart) statusChart.destroy();
+
+            const labels = ['Pago', 'Pendente'];
+            const values = [
+                data.filter(d => d.status_pagamento.toLowerCase() === 'pago').reduce((sum, d) => sum + d.total, 0),
+                data.filter(d => d.status_pagamento.toLowerCase() === 'pendente').reduce((sum, d) => sum + d.total, 0)
+            ];
+
+            statusChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: ['#a28b63', '#C97B44'],
+                        hoverBackgroundColor: ['#8b7552', '#A0522D'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: '#3A2E2E' } }
+                    }
+                }
+            });
+        });
+}
+
+carregarStatusPagamentoTodos('geral');
+
+document.getElementById('periodo').addEventListener('change', function() {
+    carregarStatusPagamentoTodos(this.value);
+});
+
+    function carregarCobrancasPendentes() {
+    fetch(`/dashboard/auxiliar/cobrancas`)
+    .then(res => res.json())
+    .then(data => {
+        const ul = document.getElementById('listaCobrancas');
+        ul.innerHTML = '';
+        if (data.length === 0) {
+            const li = document.createElement('li');
+            li.textContent = "Nenhuma cobrança pendente.";
+            ul.appendChild(li);
+        } else {
+            data.forEach(c => {
+                const dataConsulta = new Date(c.data).toLocaleDateString('pt-BR');
+                const li = document.createElement('li');
+                li.innerHTML = `
+                  <strong>${c.paciente}</strong><br>
+                  ${dataConsulta}<br>
+                  Dentista: ${c.dentista}<br>
+                  Tel: ${c.telefone}
+                `;
+                ul.appendChild(li);
+            });
+        }
+    });
+}
+
+carregarCobrancasPendentes();
+
+
+
+
+</script>
+  </body>
+  </html>

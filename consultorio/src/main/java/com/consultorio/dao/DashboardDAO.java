@@ -192,7 +192,6 @@ public class DashboardDAO {
         }
     }
 
-
     public List<Map<String, Object>> getProcedimentosFaturamento(int dentistaId, int ano) {
         String sql = """
         SELECT p.nome AS procedimento, SUM(p.valor) AS faturamento
@@ -207,6 +206,122 @@ public class DashboardDAO {
     """;
         return jdbcTemplate.queryForList(sql, dentistaId, ano);
     }
+
+
+
+
+
+
+
+
+    // A PARTIR DAQUI COMECA AUXILIAR
+    // A PARTIR DAQUI COMECA AUXILIAR
+
+
+
+
+
+
+
+
+    public BigDecimal getFaturamentoAnualTotal(int ano) {
+        String sql = """
+        SELECT SUM(p.valor) 
+        FROM consulta c
+        JOIN consulta_procedimento cp ON c.id = cp.consulta_id
+        JOIN procedimento p ON cp.procedimento_codigo = p.codigo
+        WHERE YEAR(c.data) = ? 
+          AND LOWER(c.status_pagamento) = 'pago'
+    """;
+        BigDecimal total = jdbcTemplate.queryForObject(sql, BigDecimal.class, ano);
+        return total != null ? total : BigDecimal.ZERO;
+    }
+
+    public int getTotalConsultasGeral(int ano) {
+        String sql = """
+        SELECT COUNT(*) 
+        FROM consulta 
+        WHERE YEAR(data) = ?
+    """;
+        Integer total = jdbcTemplate.queryForObject(sql, Integer.class, ano);
+        return total != null ? total : 0;
+    }
+
+    public int getConsultasPendentesGeral() {
+        String sql = """
+        SELECT COUNT(*) 
+        FROM consulta 
+        WHERE LOWER(status_pagamento) = 'pendente'
+    """;
+        Integer total = jdbcTemplate.queryForObject(sql, Integer.class);
+        return total != null ? total : 0;
+    }
+
+    public double getTempoMedioConsultasGeral() {
+        String sql = """
+        SELECT AVG(TIMESTAMPDIFF(MINUTE, horario_inicio, horario_termino)) 
+        FROM consulta 
+        WHERE horario_inicio IS NOT NULL 
+          AND horario_termino IS NOT NULL
+    """;
+        Double media = jdbcTemplate.queryForObject(sql, Double.class);
+        return media != null ? media : 0;
+    }
+
+    public Map<String, Integer> getTotalPacientesEIndicados() {
+        String sqlTotal = "SELECT COUNT(*) FROM paciente";
+        String sqlIndicados = "SELECT COUNT(*) FROM paciente WHERE id_indicador IS NOT NULL";
+
+        Integer total = jdbcTemplate.queryForObject(sqlTotal, Integer.class);
+        Integer indicados = jdbcTemplate.queryForObject(sqlIndicados, Integer.class);
+
+        return Map.of(
+                "total", total != null ? total : 0,
+                "indicados", indicados != null ? indicados : 0
+        );
+    }
+
+    public List<Map<String, Object>> getConsultasHojeTodosDentistas() {
+        String sql = """
+        SELECT c.id, p.nome AS paciente, d.nome AS dentista, c.data, c.horario_inicio, c.horario_termino
+        FROM consulta c
+        JOIN paciente p ON c.id_paciente = p.id
+        JOIN dentista d ON c.id_dentista = d.id
+        WHERE c.data = CURDATE()
+        ORDER BY c.horario_inicio
+    """;
+        return jdbcTemplate.queryForList(sql);
+    }
+
+
+    public List<Map<String, Object>> getStatusPagamentoTodos(String periodo) {
+        String sqlBase = "SELECT status_pagamento, COUNT(*) AS total FROM consulta WHERE 1=1 ";
+
+        switch (periodo.toLowerCase()) {
+            case "dia" -> sqlBase += "AND data = CURDATE() ";
+            case "mes" -> sqlBase += "AND MONTH(data) = MONTH(CURDATE()) AND YEAR(data) = YEAR(CURDATE()) ";
+            case "ano" -> sqlBase += "AND YEAR(data) = YEAR(CURDATE()) ";
+        }
+
+        sqlBase += "GROUP BY status_pagamento";
+
+        return jdbcTemplate.queryForList(sqlBase);
+    }
+
+    public List<Map<String, Object>> getCobrancasPendentes() {
+        String sql = """
+        SELECT p.nome AS paciente, p.telefone, c.data, c.horario_inicio, c.horario_termino, d.nome AS dentista
+        FROM consulta c
+        JOIN paciente p ON c.id_paciente = p.id
+        JOIN dentista d ON c.id_dentista = d.id
+        WHERE LOWER(c.status_pagamento) = 'pendente'
+        ORDER BY CASE WHEN c.data < CURDATE() THEN 0 ELSE 1 END, c.data ASC
+        LIMIT 15
+    """;
+        return jdbcTemplate.queryForList(sql);
+    }
+
+
 
 
 
