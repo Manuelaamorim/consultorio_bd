@@ -84,43 +84,59 @@
         </div>
     </section>
 
-    <section class="grafico-consultas">
-        <h2>Consultas por Mês</h2>
-        <label for="anoSelect">Ano:</label>
-        <select id="anoSelect">
+    <div class="grafico-consultas">
+        <h2>Consultas por Mês (Todos os Dentistas)</h2>
+        <label for="anoSelectAux">Ano:</label>
+        <select id="anoSelectAux">
             <option value="2023">2023</option>
             <option value="2024" selected>2024</option>
             <option value="2025">2025</option>
         </select>
         <div class="chart-container-grande">
-            <canvas id="consultasMesChart"></canvas>
+            <canvas id="consultasMesChartAux"></canvas>
         </div>
-    </section>
+    </div>
+
 
     <section class="linha-faturamento">
-        <div class="grafico-faturamento">
-            <h2>Faturamento Mensal Comparativo</h2>
 
+        <div class="grafico-faturamento">
+            <h2>Faturamento Mensal Comparativo </h2>
+            <h3>(Consultorio)</h3>
             <div class="chart-container-grande">
                 <canvas id="faturamentoAnualChart"></canvas>
             </div>
         </div>
 
-        <div class="procedimentos-tabela">
-            <h2>Faturamento por Procedimento</h2>
-            <h3>(Ano vigente)</h3>
 
-            <table>
-                <thead>
-                <tr>
-                    <th>Procedimento</th>
-                    <th>Faturamento</th>
-                    <th>Percentual</th>
-                </tr>
-                </thead>
-                <tbody id="tabelaProcedimentos"></tbody>
-            </table>
-        </div>
+            <div class="grafico-faturamento">
+                <h2>Faturamento por Dentista</h2>
+
+                <div class="filtros-faturamento">
+                    <label for="periodoFaturamento">Período:</label>
+                    <select id="periodoFaturamento">
+                        <option value="geral">Geral</option>
+                        <option value="ano">Ano</option>
+                    </select>
+
+                    <div id="filtrosAno" style="display:none;">
+                        <label for="anoFaturamento">Ano:</label>
+                        <input type="number" id="anoFaturamento" value="2024" min="2000">
+                    </div>
+                </div>
+
+
+                <div class="faturamento-pizza-legenda">
+                    <div class="chart-container">
+                        <canvas id="faturamentoDentistasChart"></canvas>
+                        <div id="faturamentoTotal" style="margin-top:10px; font-weight:bold;"></div>
+                    </div>
+
+                    <div id="legendaDentistas" class="legenda-dentistas"></div>
+                </div>
+
+            </div>
+
     </section>
 </main>
 
@@ -297,6 +313,189 @@ document.getElementById('periodo').addEventListener('change', function() {
 
 carregarCobrancasPendentes();
 
+    let consultasChartAux;
+
+function carregarConsultasPorMesAux(ano) {
+    fetch(`/dashboard/auxiliar/consultas-por-mes?ano=${ano}`)
+      .then(res => res.json())
+      .then(data => {
+          const ctx = document.getElementById('consultasMesChartAux').getContext('2d');
+          const labels = Array.from({length: 12}, (_, i) => `${i + 1}`);
+          const valores = new Array(12).fill(0);
+          data.forEach(item => { valores[item.mes - 1] = item.total; });
+
+          if (consultasChartAux) consultasChartAux.destroy();
+
+          consultasChartAux = new Chart(ctx, {
+              type: 'bar',
+              data: {
+                  labels,
+                  datasets: [{
+                      label: 'Consultas',
+                      data: valores,
+                      backgroundColor: '#A28B63',
+                      borderColor: '#3A2E2E',
+                      borderWidth: 1
+                  }]
+              },
+              options: {
+                  responsive: true,
+                  plugins: { legend: { display: false } },
+                  scales: {
+                      x: {
+                          title: { display: true, text: 'Meses', color: '#4E342E' },
+                          ticks: { color: '#4E342E' }
+                      },
+                      y: {
+                          beginAtZero: true,
+                          title: { display: true, text: 'Total Consultas', color: '#4E342E' },
+                          ticks: { color: '#4E342E', stepSize: 1 }
+                      }
+                  }
+              }
+          });
+      });
+}
+
+function atualizarGraficoConsultasAux() {
+    const ano = document.getElementById('anoSelectAux').value;
+    carregarConsultasPorMesAux(ano);
+}
+
+document.getElementById('anoSelectAux').addEventListener('change', atualizarGraficoConsultasAux);
+atualizarGraficoConsultasAux();
+
+    function carregarFaturamentoAnualComparativoTodos() {
+  const anos = [2023, 2024, 2025];
+  const cores = ['#5D4037', '#C97B44', '#B0503C'];
+
+  fetch(`/dashboard/faturamento-mensal-acumulado-todos?anos=${anos.join('&anos=')}`)
+    .then(res => res.json())
+    .then(data => {
+      const ctx = document.getElementById('faturamentoAnualChart').getContext('2d');
+      const labels = Array.from({ length: 12 }, (_, i) => `${i + 1}`);
+
+      const datasets = anos.map((ano, index) => ({
+        label: `Ano ${ano}`,
+        data: data.faturamento[ano].map(v => parseFloat(v)),
+        borderColor: cores[index],
+        backgroundColor: cores[index],
+        borderWidth: 3,
+        fill: false,
+        tension: 0.4,
+        pointRadius: 3,
+        pointHoverRadius: 5
+      }));
+
+      new Chart(ctx, {
+        type: 'line',
+        data: { labels, datasets },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                color: '#4E342E',
+                boxWidth: 20,
+                boxHeight: 12
+              }
+            }
+          },
+          scales: {
+            x: {
+              title: { display: true, text: 'Meses', color: '#4E342E' },
+              ticks: { color: '#4E342E' },
+              grid: { display: false }
+            },
+            y: {
+              beginAtZero: true,
+              title: { display: true, text: 'Valor (R$)', color: '#4E342E' },
+              ticks: { color: '#4E342E', maxTicksLimit: 6 },
+              grid: { display: false }
+            }
+          }
+        }
+      });
+    });
+}
+
+carregarFaturamentoAnualComparativoTodos();
+
+    let faturamentoDentistasChart;
+
+function carregarFaturamentoPorDentista(periodo = 'geral', ano = null) {
+    let url = `/dashboard/faturamento-por-dentista?periodo=${periodo}`;
+    if (ano) url += `&ano=${ano}`;
+
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+          const ctx = document.getElementById('faturamentoDentistasChart').getContext('2d');
+          if (faturamentoDentistasChart) faturamentoDentistasChart.destroy();
+
+          const labels = data.map(d => d.dentista);
+          const valores = data.map(d => d.total);
+          const total = valores.reduce((sum, val) => sum + val, 0);
+
+          const cores = ['#5D4037', '#C97B44', '#B0503C', '#8B7355', '#D2691E'];
+
+          faturamentoDentistasChart = new Chart(ctx, {
+              type: 'pie',
+              data: {
+                  labels: labels,
+                  datasets: [{
+                      data: valores,
+                      backgroundColor: cores,
+                      borderWidth: 1
+                  }]
+              },
+              options: {
+                  responsive: true,
+                  plugins: {
+                      legend: { display: false }
+                  }
+              }
+          });
+
+          // Mostra total
+          document.getElementById('faturamentoTotal').textContent =
+              `Total: ${total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
+
+          // Monta legenda manual
+          const legenda = document.getElementById('legendaDentistas');
+          legenda.innerHTML = '';
+
+          data.forEach((d, i) => {
+              const perc = total > 0 ? ((d.total / total) * 100).toFixed(1) : 0;
+
+              const item = document.createElement('div');
+              item.className = 'legenda-item';
+              item.innerHTML = `
+                  <div class="legenda-cor" style="background-color:${cores[i % cores.length]}"></div>
+                  ${d.dentista}: ${perc}%`;
+              legenda.appendChild(item);
+          });
+      });
+}
+
+// Troca de período e ano
+document.getElementById('periodoFaturamento').addEventListener('change', function() {
+    const periodo = this.value;
+    const filtros = document.getElementById('filtrosAno');
+    filtros.style.display = (periodo === 'ano') ? 'block' : 'none';
+    atualizarGraficoFaturamentoDentista();
+});
+
+document.getElementById('anoFaturamento').addEventListener('change', atualizarGraficoFaturamentoDentista);
+
+function atualizarGraficoFaturamentoDentista() {
+    const periodo = document.getElementById('periodoFaturamento').value;
+    const ano = (periodo === 'ano') ? document.getElementById('anoFaturamento').value : null;
+    carregarFaturamentoPorDentista(periodo, ano);
+}
+
+atualizarGraficoFaturamentoDentista();
 
 
 

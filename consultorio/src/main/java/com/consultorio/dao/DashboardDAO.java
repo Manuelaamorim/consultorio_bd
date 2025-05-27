@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -319,6 +320,73 @@ public class DashboardDAO {
         LIMIT 15
     """;
         return jdbcTemplate.queryForList(sql);
+    }
+
+    public List<Map<String, Object>> getConsultasPorMesTodos(int ano) {
+        String sql = """
+        SELECT MONTH(data) AS mes, COUNT(*) AS total
+        FROM consulta
+        WHERE YEAR(data) = ?
+        GROUP BY mes
+        ORDER BY mes
+    """;
+        return jdbcTemplate.queryForList(sql, ano);
+    }
+
+    public List<BigDecimal> getFaturamentoMensalAcumuladoTodos(int ano) {
+        String sql = """
+        SELECT MONTH(c.data) AS mes, SUM(p.valor) AS total
+        FROM consulta c
+        JOIN consulta_procedimento cp ON c.id = cp.consulta_id
+        JOIN procedimento p ON cp.procedimento_codigo = p.codigo
+        WHERE YEAR(c.data) = ?
+          AND LOWER(c.status_pagamento) = 'pago'
+        GROUP BY mes
+    """;
+
+        List<Map<String, Object>> resultados = jdbcTemplate.queryForList(sql, ano);
+
+        BigDecimal[] faturamentoPorMes = new BigDecimal[12];
+        Arrays.fill(faturamentoPorMes, BigDecimal.ZERO);
+
+        for (Map<String, Object> row : resultados) {
+            int mes = ((Number) row.get("mes")).intValue();
+            BigDecimal total = (BigDecimal) row.get("total");
+            faturamentoPorMes[mes - 1] = total != null ? total : BigDecimal.ZERO;
+        }
+
+        // Acumular
+        for (int i = 1; i < 12; i++) {
+            faturamentoPorMes[i] = faturamentoPorMes[i].add(faturamentoPorMes[i - 1]);
+        }
+
+        return Arrays.asList(faturamentoPorMes);
+    }
+
+    public List<Map<String, Object>> getFaturamentoPorDentista(String periodo, Integer ano, Integer mes) {
+        String sql = """
+        SELECT d.nome AS dentista, SUM(p.valor) AS total
+        FROM consulta c
+        JOIN dentista d ON c.id_dentista = d.id
+        JOIN consulta_procedimento cp ON c.id = cp.consulta_id
+        JOIN procedimento p ON cp.procedimento_codigo = p.codigo
+        WHERE LOWER(c.status_pagamento) = 'pago'
+    """;
+
+        List<Object> params = new ArrayList<>();
+
+        if ("ano".equalsIgnoreCase(periodo)) {
+            sql += " AND YEAR(c.data) = ?";
+            params.add(ano);
+        } else if ("mes".equalsIgnoreCase(periodo)) {
+            sql += " AND YEAR(c.data) = ? AND MONTH(c.data) = ?";
+            params.add(ano);
+            params.add(mes);
+        }
+
+        sql += " GROUP BY d.nome ORDER BY total DESC";
+
+        return jdbcTemplate.queryForList(sql, params.toArray());
     }
 
 

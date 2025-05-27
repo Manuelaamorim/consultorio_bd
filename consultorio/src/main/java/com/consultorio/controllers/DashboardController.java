@@ -219,7 +219,36 @@ public class DashboardController {
         return dashboardDAO.getCobrancasPendentes();
     }
 
+    @GetMapping("/auxiliar/consultas-por-mes")
+    public List<Map<String, Object>> consultasPorMesTodos(@RequestParam int ano) {
+        return dashboardDAO.getConsultasPorMesTodos(ano);
+    }
 
+    @GetMapping("/faturamento-mensal-acumulado-todos")
+    @ResponseBody
+    public Map<String, Object> faturamentoMensalTodos(@RequestParam List<Integer> anos) {
+        Map<String, List<BigDecimal>> resultado = new HashMap<>();
+
+        for (int ano : anos) {
+            List<BigDecimal> faturamentoPorMes = dashboardDAO.getFaturamentoMensalAcumuladoTodos(ano);
+            resultado.put(String.valueOf(ano), faturamentoPorMes);
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("faturamento", resultado);
+        return response;
+    }
+
+
+    @GetMapping("/faturamento-por-dentista")
+    @ResponseBody
+    public List<Map<String, Object>> faturamentoPorDentista(
+            @RequestParam(defaultValue = "geral") String periodo,
+            @RequestParam(required = false) Integer ano,
+            @RequestParam(required = false) Integer mes) {
+
+        return dashboardDAO.getFaturamentoPorDentista(periodo, ano, mes);
+    }
 
 
 
