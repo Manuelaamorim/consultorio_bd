@@ -148,4 +148,5 @@ public class ConsultaDAO {
         BigDecimal total = jdbcTemplate.queryForObject(sql, BigDecimal.class, consultaId);
         return total != null ? total : BigDecimal.ZERO;
     }
+
 }

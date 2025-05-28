@@ -84,4 +84,10 @@ public class LoginCadastroController {
         }
         return "redirect:/";
     }
+    @GetMapping("/login")
+    public String exibirLoginPorLogin() {
+        return "login";
+    }
+
+
 }

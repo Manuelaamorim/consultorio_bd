@@ -34,9 +34,11 @@ public class DentistaDAO {
     }
 
     public void deletarPorCpf(String cpf) {
-        String sql = "DELETE FROM dentista WHERE cpf = ?";
-        jdbcTemplate.update(sql, cpf);
+        System.out.println("Tentando deletar dentista com CPF: " + cpf);
+        int linhasAfetadas = jdbcTemplate.update("DELETE FROM dentista WHERE cpf = ?", cpf);
+        System.out.println("Linhas deletadas: " + linhasAfetadas);
     }
+
 
     public List<Dentista> listarDentistas() {
         String sql = "SELECT * FROM dentista";

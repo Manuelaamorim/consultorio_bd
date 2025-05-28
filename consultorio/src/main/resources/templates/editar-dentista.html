@@ -32,7 +32,7 @@
         <input type="text" id="telefone" name="telefone" th:value="${dentista.telefone}" required>
 
         <label for="telefone">Telefone:</label>
-        <input type="text" id="telefone" name="telefone" th:value="${dentista.telefone2}" required>
+        <input type="text" id="telefone2" name="telefone2" th:value="${dentista.telefone2}" required>
 
 
         <label for="email">Email:</label>
@@ -60,7 +60,10 @@
         <input type="text" id="especialidade" name="especialidade" th:value="${dentista.especialidade}" required>
 
         <button type="submit">Salvar alterações</button>
-
+    </form>
+    <form action="/dentista/excluir" method="post">
+        <input type="hidden" name="cpf" th:value="${dentista.cpf}">
+        <button type="submit">Excluir Conta</button>
     </form>
 </div>
 </body>

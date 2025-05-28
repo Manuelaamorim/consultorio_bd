@@ -7,11 +7,13 @@ import com.consultorio.dao.ProcedimentoDAO;
 import com.consultorio.models.Consulta;
 import com.consultorio.models.Dentista;
 import com.consultorio.models.Procedimento;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -196,4 +198,24 @@ public class DentistaController {
         consultaDAO.salvar(consulta);
         return "redirect:/dentista/consultas";
     }
+
+    @PostMapping("/excluir")
+    public String excluirDentista(@RequestParam String cpf, RedirectAttributes redirectAttributes) {
+        // Agora pode excluir o dentista
+        dentistaDAO.deletarPorCpf(cpf);
+        redirectAttributes.addFlashAttribute("mensagem", "Dentista deletado com sucesso!");
+        return "login";
+    }
+
+    @GetMapping("/login")
+    public String mostrarLogin() {
+        return "login"; // o nome da página HTML de login
+    }
+
+
+
+
+
+
+
 }
