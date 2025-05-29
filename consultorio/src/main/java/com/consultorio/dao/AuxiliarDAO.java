@@ -56,8 +56,7 @@ public class AuxiliarDAO {
     }
 
     public void deletarPorCpf(String cpf) {
-        String sql = "DELETE FROM auxiliar WHERE cpf = ?";
-        jdbcTemplate.update(sql, cpf);
+        int linhasAfetadas = jdbcTemplate.update("DELETE FROM auxiliar WHERE cpf = ?", cpf);
     }
 
     public void atualizar(Auxiliar auxiliar) {

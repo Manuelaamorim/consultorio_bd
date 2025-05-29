@@ -204,7 +204,7 @@ public class DentistaController {
         // Agora pode excluir o dentista
         dentistaDAO.deletarPorCpf(cpf);
         redirectAttributes.addFlashAttribute("mensagem", "Dentista deletado com sucesso!");
-        return "login";
+        return "redirect:/login";
     }
 
     @GetMapping("/login")
