@@ -16,7 +16,7 @@ public class DashboardDAO {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    // 1. Próximas consultas do dia
+    // Próximas consultas do dia
     public List<Map<String, Object>> getConsultasHoje(int dentistaId) {
         String sql = "SELECT c.id, p.nome, c.data, c.horario_inicio, c.horario_termino " +
                 "FROM consulta c " +
@@ -46,6 +46,7 @@ public class DashboardDAO {
         return jdbcTemplate.queryForList(sql, dentistaId, ano);
     }
 
+
     public Double getMediaConsultas(int dentistaId, int ano, int ateMes) {
         String sql = "SELECT AVG(mensal.total) FROM (" +
                 " SELECT COUNT(*) AS total FROM consulta " +
@@ -55,7 +56,7 @@ public class DashboardDAO {
     }
 
 
-    // grafico pizza consultas pagas e pendentes
+    //  grafico pizza consultas pagas e pendentes
     public List<Map<String, Object>> getStatusPagamentoPorPeriodo(int dentistaId, String periodo) {
         String sqlBase = "SELECT status_pagamento, COUNT(*) AS total FROM consulta WHERE id_dentista = ? ";
 
@@ -80,6 +81,7 @@ public class DashboardDAO {
         return jdbcTemplate.queryForList(sqlBase, dentistaId);
     }
 
+
     public BigDecimal getFaturamentoAnual(int dentistaId, int ano) {
         String sql = """
         SELECT SUM(p.valor) 
@@ -94,6 +96,7 @@ public class DashboardDAO {
         return total != null ? total : BigDecimal.ZERO;
     }
 
+
     public int getPacientesAtendidos(int dentistaId, int ano) {
         String sql = """
         SELECT COUNT(DISTINCT c.id_paciente) 
@@ -105,6 +108,7 @@ public class DashboardDAO {
         Integer total = jdbcTemplate.queryForObject(sql, Integer.class, dentistaId, ano);
         return total != null ? total : 0;
     }
+
 
     public int getTotalConsultas(int dentistaId, int ano) {
         String sql = """
@@ -118,6 +122,7 @@ public class DashboardDAO {
     }
 
 
+    // .
     public List<BigDecimal> getFaturamentoMensalAcumulado(int dentistaId, int ano) {
         String sql = """
         SELECT MONTH(c.data) AS mes, SUM(p.valor) AS total
@@ -171,6 +176,7 @@ public class DashboardDAO {
         Double media = jdbcTemplate.queryForObject(sql, Double.class, dentistaId);
         return media != null ? media : 0;
     }
+
 
 
     public Map<String, Object> getProcedimentoMaisRealizado(int dentistaId) {

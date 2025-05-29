@@ -140,6 +140,19 @@ public class AuxiliarController {
         return "formulario-paciente";
     }
 
+    @GetMapping("/pacientes")
+    public String listarPacientes(HttpSession session, Model model) {
+        if (verificaSessaoAuxiliar(session)) return "redirect:/";
+
+        List<Paciente> pacientes = pacienteDAO.listarPacientes();
+        model.addAttribute("pacientes", pacientes);
+
+        Auxiliar auxiliarLogado = (Auxiliar) session.getAttribute("usuario");
+        model.addAttribute("cpf", auxiliarLogado.getCpf());
+
+        return "listar-pacientes"; // ou o nome real da página que lista os pacientes
+    }
+
     @PostMapping("/pacientes/salvar")
     public String salvarPaciente(@ModelAttribute Paciente paciente) {
         pacienteDAO.salvar(paciente);
