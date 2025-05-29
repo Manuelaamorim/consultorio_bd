@@ -1,8 +1,8 @@
-📋 Sistema de Agendamento de Consultas Odontológicas
-📖 Descrição
+# 📋 Sistema de Gerenciamento de Clínica Odontológica
+## 📖 Descrição
 Sistema para informatizar o agendamento de consultas do consultório da Dra. Aida Cavalcanti. O projeto permite o gerenciamento de pacientes, funcionários, procedimentos e consultas, evitando conflitos de horários e organizando melhor o fluxo do consultório.
 
-🦷 Funcionalidades
+## 🦷 Funcionalidades
 Cadastro de Pessoas: Registro de nome, CPF, telefone, e-mail, endereço (rua, número, bairro, cidade) e data de nascimento.
 
 Gestão de Funcionários: Cadastro de dentistas (CRO e especialidade) e auxiliares administrativos.
@@ -15,7 +15,7 @@ Gestão de Procedimentos: Cadastro de procedimentos com código, nome, valor e i
 
 Histórico de Consultas: Registro de diagnósticos, tratamentos, recomendações e procedimentos realizados.
 
-🛠️ Tecnologias
+## 🛠️ Tecnologias
 Java
 
 JDBC (sem ORM)
@@ -28,5 +28,5 @@ Spring Boot
 
 JavaScript
 
-📅 Objetivo
+## 📅 Objetivo
 Organizar e automatizar o agendamento de consultas odontológicas, eliminando conflitos e melhorando o controle sobre pacientes, procedimentos e pagamentos.
