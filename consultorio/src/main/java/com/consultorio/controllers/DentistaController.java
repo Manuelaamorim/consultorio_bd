@@ -46,6 +46,7 @@ public class DentistaController {
         }
         Dentista dentistaLogado = (Dentista) session.getAttribute("usuario");
         model.addAttribute("cpf", dentistaLogado.getCpf());
+        model.addAttribute("dentistaId", dentistaLogado.getId());
         return "dentista.html";
     }
 

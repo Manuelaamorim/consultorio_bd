@@ -8,6 +8,10 @@
 </head>
 <body>
 
+<script th:inline="javascript">
+  const dentistaId = [[${dentistaId}]];
+</script>
+
 <header class="navbar">
   <div class="logo"><a th:href="@{/dentista}">Consultório Aida Cavalcanti</a></div>
   <nav class="nav-links">
@@ -124,7 +128,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  const dentistaId = 1; // Ajuste conforme o dentista logado
 
   // Faturamento Anual
   function carregarFaturamentoAnual() {
