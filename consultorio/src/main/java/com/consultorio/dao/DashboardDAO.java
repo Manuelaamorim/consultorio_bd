@@ -47,13 +47,13 @@ public class DashboardDAO {
     }
 
 
-    public Double getMediaConsultas(int dentistaId, int ano, int ateMes) {
+    /*public Double getMediaConsultas(int dentistaId, int ano, int ateMes) {
         String sql = "SELECT AVG(mensal.total) FROM (" +
                 " SELECT COUNT(*) AS total FROM consulta " +
                 " WHERE id_dentista = ? AND YEAR(data) = ? AND MONTH(data) <= ? " +
                 " GROUP BY MONTH(data)) AS mensal";
         return jdbcTemplate.queryForObject(sql, Double.class, dentistaId, ano, ateMes);
-    }
+    }*/
 
 
     //  grafico pizza consultas pagas e pendentes
@@ -97,7 +97,7 @@ public class DashboardDAO {
     }
 
 
-    public int getPacientesAtendidos(int dentistaId, int ano) {
+    /*public int getPacientesAtendidos(int dentistaId, int ano) {
         String sql = """
         SELECT COUNT(DISTINCT c.id_paciente) 
         FROM consulta c
@@ -107,7 +107,7 @@ public class DashboardDAO {
     """;
         Integer total = jdbcTemplate.queryForObject(sql, Integer.class, dentistaId, ano);
         return total != null ? total : 0;
-    }
+    }*/
 
 
     public int getTotalConsultas(int dentistaId, int ano) {

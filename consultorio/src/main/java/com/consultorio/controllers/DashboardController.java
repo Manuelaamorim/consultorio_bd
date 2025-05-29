@@ -37,7 +37,7 @@ public class DashboardController {
         return dashboardDAO.getConsultasPorMes(dentistaId, ano);
     }
 
-    @GetMapping("/comparativo")
+    /*@GetMapping("/comparativo")
     public Map<String, Object> comparativo(
             @RequestParam int dentistaId,
             @RequestParam int ano) {
@@ -58,7 +58,7 @@ public class DashboardController {
         resultado.put("variacao", variacao);
 
         return resultado;
-    }
+    }*/
 
 
     // 3. Status de pagamento
@@ -78,7 +78,7 @@ public class DashboardController {
         return response;
     }
 
-    @GetMapping("/pacientes-atendidos")
+    /*@GetMapping("/pacientes-atendidos")
     @ResponseBody
     public Map<String, Object> pacientesAtendidos(
             @RequestParam int dentistaId,
@@ -87,7 +87,7 @@ public class DashboardController {
         Map<String, Object> response = new HashMap<>();
         response.put("total", total);
         return response;
-    }
+    }*/
 
     @GetMapping("/faturamento-mensal-acumulado")
     @ResponseBody
